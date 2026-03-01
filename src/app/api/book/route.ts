@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
         const sheets = google.sheets({ version: 'v4', auth });
         await sheets.spreadsheets.values.append({
           spreadsheetId: process.env.GOOGLE_SHEET_ID,
-          range: 'Sheet1!A:I',
+          range: 'Sheet1!A:J',
           valueInputOption: 'USER_ENTERED',
           requestBody: {
             values: [[
@@ -45,7 +45,8 @@ export async function POST(req: NextRequest) {
               plan.priceFormatted,
               formattedDates,
               timeSlot,
-              new Date().toISOString()
+              new Date().toISOString(),
+              "Not Paid"
             ]],
           },
         });
