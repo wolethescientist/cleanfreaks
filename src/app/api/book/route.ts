@@ -9,7 +9,7 @@ const resend = new Resend(process.env.RESEND_API_KEY || '');
 export async function POST(req: NextRequest) {
   try {
     const data = await req.json();
-    const { plan, date, timeSlot, customer } = data;
+    const { plan, dates, timeSlot, customer } = data;
 
     // 1. Generate Unique Booking ID (e.g., CF-YYYYMMDD-001)
     const today = new Date();
@@ -17,7 +17,9 @@ export async function POST(req: NextRequest) {
     const randomStr = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
     const bookingId = `CF-${dateStr}-${randomStr}`;
 
-    const formattedDate = date ? format(new Date(date), 'MMMM d, yyyy') : 'N/A';
+    const formattedDates = dates && dates.length > 0
+      ? dates.map((d: string | Date) => format(new Date(d), 'MMMM d, yyyy')).join(', ')
+      : 'N/A';
 
     // 2. Save to Google Sheets (if credentials exist)
     if (process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL && process.env.GOOGLE_PRIVATE_KEY && process.env.GOOGLE_SHEET_ID) {
@@ -41,7 +43,7 @@ export async function POST(req: NextRequest) {
               customer.phone,
               plan.name,
               plan.priceFormatted,
-              formattedDate,
+              formattedDates,
               timeSlot,
               new Date().toISOString()
             ]],
@@ -71,7 +73,7 @@ export async function POST(req: NextRequest) {
             <p><strong>Email:</strong> ${customer.email}</p>
             <p><strong>Phone:</strong> ${customer.phone}</p>
             <p><strong>Plan:</strong> ${plan.name}</p>
-            <p><strong>Schedule:</strong> ${formattedDate} at ${timeSlot}</p>
+            <p><strong>Schedule:</strong> <br/> ${formattedDates} <br/> at ${timeSlot}</p>
             <p><strong>Total Amount:</strong> ${plan.priceFormatted}</p>
           `,
         });
@@ -88,7 +90,7 @@ export async function POST(req: NextRequest) {
               <div style="background: #F1F8F1; padding: 15px; border-radius: 10px;">
                 <p><strong>Booking ID:</strong> ${bookingId}</p>
                 <p><strong>Plan:</strong> ${plan.name}</p>
-                <p><strong>Schedule:</strong> ${formattedDate} at ${timeSlot}</p>
+                <p><strong>Schedule:</strong> <br/> ${formattedDates} <br/> at ${timeSlot}</p>
               </div>
               <p>Please ensure you complete your payment and send the receipt to us via WhatsApp to finalize your cleaning schedule.</p>
               <p>Best regards,<br/>The Clean Freaks Team</p>
