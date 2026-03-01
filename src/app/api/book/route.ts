@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
     // 3. Send Emails via Resend (if API key exists)
     if (process.env.RESEND_API_KEY) {
       try {
-        const adminEmail = process.env.ADMIN_EMAIL || 'admin@cleanfreaks.com';
+        const adminEmail = process.env.ADMIN_EMAIL || 'oluwalz247@gmail.com';
         const senderEmail = process.env.SENDER_EMAIL || 'noreply@henamfacility.com.ng';
 
         // Email to Admin
