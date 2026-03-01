@@ -4,8 +4,8 @@ export const PLANS: Plan[] = [
   {
     id: 'standard',
     name: "STANDARD QUARTERLY PLAN",
-    price: 60000,
-    priceFormatted: "₦60,000",
+    price: 79000,
+    priceFormatted: "₦79,000",
     sessions: "12 Cleaning Sessions (3 Months)",
     visits: "Equivalent to 4 visits per month",
     includes: [
@@ -23,8 +23,8 @@ export const PLANS: Plan[] = [
   {
     id: 'premium',
     name: "PREMIUM QUARTERLY PLAN",
-    price: 120000,
-    priceFormatted: "₦120,000",
+    price: 159000,
+    priceFormatted: "₦159,000",
     sessions: "24 Cleaning Sessions (3 Months)",
     visits: "Equivalent to 8 visits per month",
     includes: [
