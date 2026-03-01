@@ -83,7 +83,7 @@ export default function CleanFreaksBooking() {
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
         className="w-full py-4 flex justify-center bg-transparent"
       >
-        <div className="relative h-40 w-[96%] max-w-[30rem] sm:h-44 sm:max-w-[36rem] md:h-52 md:max-w-[46rem] drop-shadow-sm hover:scale-105 transition-transform duration-300">
+        <div className="relative w-[96%] max-w-[30rem] sm:max-w-[36rem] md:max-w-[46rem] aspect-[3.4/1] sm:aspect-[3.6/1] md:aspect-[3.8/1] drop-shadow-sm hover:scale-105 transition-transform duration-300">
           <Image
             src="/logo1.png"
             alt="Clean Freaks Logo"
