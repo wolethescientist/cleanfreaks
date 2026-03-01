@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import sgMail from '@sendgrid/mail';
+import { Resend } from 'resend';
 import { google } from 'googleapis';
 import { format } from 'date-fns';
 
-// Initialize SendGrid
-if (process.env.SENDGRID_API_KEY) {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-}
+// Initialize Resend
+const resend = new Resend(process.env.RESEND_API_KEY || '');
 
 export async function POST(req: NextRequest) {
   try {
@@ -55,14 +53,14 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 3. Send Emails via SendGrid (if API key exists)
-    if (process.env.SENDGRID_API_KEY) {
+    // 3. Send Emails via Resend (if API key exists)
+    if (process.env.RESEND_API_KEY) {
       try {
         const adminEmail = process.env.ADMIN_EMAIL || 'admin@cleanfreaks.com';
         const senderEmail = process.env.SENDER_EMAIL || 'bookings@cleanfreaks.com';
-        
+
         // Email to Admin
-        await sgMail.send({
+        await resend.emails.send({
           to: adminEmail,
           from: senderEmail,
           subject: `New Booking: ${bookingId} - ${customer.name}`,
@@ -79,7 +77,7 @@ export async function POST(req: NextRequest) {
         });
 
         // Email to Customer
-        await sgMail.send({
+        await resend.emails.send({
           to: customer.email,
           from: senderEmail,
           subject: `Booking Confirmation: ${bookingId}`,
@@ -98,21 +96,21 @@ export async function POST(req: NextRequest) {
           `,
         });
       } catch (emailError) {
-        console.error('SendGrid Email Error:', emailError);
+        console.error('Resend Email Error:', emailError);
       }
     }
 
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       bookingId,
-      message: "Booking processed successfully" 
+      message: "Booking processed successfully"
     });
 
   } catch (error) {
     console.error('Booking API Error:', error);
-    return NextResponse.json({ 
-      success: false, 
-      error: "Internal Server Error" 
+    return NextResponse.json({
+      success: false,
+      error: "Internal Server Error"
     }, { status: 500 });
   }
 }

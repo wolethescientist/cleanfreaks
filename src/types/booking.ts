@@ -7,11 +7,12 @@ export type Plan = {
   visits: string;
   includes: string[];
   bestFor: string;
+  maxSessions: number;
 };
 
 export type BookingData = {
   plan: Plan | null;
-  date: Date | null;
+  dates: Date[];
   timeSlot: string | null;
   customer: {
     name: string;

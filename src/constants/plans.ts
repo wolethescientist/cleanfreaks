@@ -17,7 +17,8 @@ export const PLANS: Plan[] = [
       "Quality assurance review",
       "Dedicated support line"
     ],
-    bestFor: "Apartments, small to mid-size homes, routine upkeep."
+    bestFor: "Apartments, small to mid-size homes, routine upkeep.",
+    maxSessions: 4
   },
   {
     id: 'premium',
@@ -35,6 +36,7 @@ export const PLANS: Plan[] = [
       "Quality assurance review",
       "Dedicated support line"
     ],
-    bestFor: "Large households, high-traffic homes, twice-weekly upkeep."
+    bestFor: "Large households, high-traffic homes, twice-weekly upkeep.",
+    maxSessions: 8
   }
 ];

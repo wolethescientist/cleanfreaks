@@ -1,21 +1,42 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-jakarta-sans), ui-sans-serif, system-ui, sans-serif;
-  --color-brand-primary: #2D5A27;
-  --color-brand-secondary: #4CAF50;
-  --color-brand-light: #F1F8F1;
-  --color-brand-dark: #1B3518;
+  --font-sans: var(--font-quicksand), ui-sans-serif, system-ui, sans-serif;
+  --color-brand-primary: #51A432;
+  --color-brand-secondary: #00774D;
+  --color-brand-light: #E7F5E4;
+  --color-brand-dark: #373A3C;
 }
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /* React Day Picker Global Overrides */
+  --rdp-accent-color: #51A432;
+  --rdp-accent-background-color: #E7F5E4;
+  --rdp-selected-border: none;
+  --rdp-today-color: #00774D;
+}
+
+.rdp-root {
+  --rdp-accent-color: #51A432 !important;
+  --rdp-accent-background-color: #E7F5E4 !important;
+  --rdp-selected-border: 2px solid transparent !important;
+  --rdp-today-color: #00774D !important;
+}
+
+.rdp-chevron {
+  fill: #51A432 !important;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+  font-family: var(--font-quicksand), "Quicksand", sans-serif;
+}
+
+* {
+  font-family: var(--font-quicksand), "Quicksand", sans-serif;
 }
 
 .calendar-tile {
@@ -28,4 +49,28 @@ body {
 
 .calendar-tile.disabled {
   @apply opacity-30 cursor-not-allowed pointer-events-none;
+}
+
+/* Hard override for react-day-picker SVGs & Nav buttons */
+.rdp-root .rdp-button:focus-visible:not([disabled]) {
+  outline: 2px solid var(--color-brand-primary) !important;
+  outline-offset: 2px;
+}
+
+.rdp-root .rdp-day_selected,
+.rdp-root .rdp-selected .rdp-day_button,
+.rdp-root .rdp-day_selected:focus-visible {
+  outline: none !important;
+  border: 2px solid transparent !important;
+  background-color: var(--color-brand-primary) !important;
+}
+
+.rdp-root .rdp-nav_button,
+.rdp-root .rdp-nav_button svg {
+  color: var(--color-brand-primary) !important;
+  fill: var(--color-brand-primary) !important;
+}
+
+.rdp-root .rdp-nav_button:hover {
+  background-color: var(--color-brand-light) !important;
 }

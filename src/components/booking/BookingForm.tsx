@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { User, Mail, Phone, ArrowRight, Loader2 } from "lucide-react";
+import { motion } from "framer-motion";
 
 type BookingFormProps = {
   customer: { name: string; email: string; phone: string };
@@ -19,7 +20,7 @@ export default function BookingForm({ customer, onSubmit, isSubmitting }: Bookin
     if (!formData.email) newErrors.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Email is invalid";
     if (!formData.phone) newErrors.phone = "Phone number is required";
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -33,81 +34,84 @@ export default function BookingForm({ customer, onSubmit, isSubmitting }: Bookin
 
   return (
     <div className="max-w-2xl mx-auto py-12 px-4">
-      <div className="bg-white p-10 rounded-3xl shadow-xl border border-gray-100">
-        <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center uppercase tracking-tight">Your Details</h3>
-        
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-white p-10 md:p-14 rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100"
+      >
+        <h3 className="text-3xl font-black text-gray-900 mb-10 text-center tracking-tight">
+          Complete Your <span className="text-brand-primary">Booking</span>
+        </h3>
+
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-gray-700 uppercase tracking-wider flex items-center gap-2">
-              <User size={16} className="text-brand-primary" /> Full Name
+          <div className="space-y-3">
+            <label className="text-xs font-black text-gray-600 uppercase tracking-widest flex items-center gap-2">
+              <User size={16} className="text-brand-secondary" /> Full Name
             </label>
             <input
               type="text"
               placeholder="John Doe"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className={`w-full p-4 rounded-xl border-2 transition-all outline-none ${
-                errors.name ? "border-red-500 bg-red-50" : "border-gray-100 focus:border-brand-primary bg-gray-50/50"
-              }`}
+              className={`w-full p-5 rounded-2xl border-2 transition-all outline-none font-medium text-gray-800 ${errors.name ? "border-red-500 bg-red-50" : "border-gray-100 hover:border-brand-primary/30 focus:border-brand-primary focus:bg-brand-light/20 focus:shadow-[0_0_0_4px_rgba(81,164,50,0.1)] bg-gray-50/50"
+                }`}
             />
-            {errors.name && <p className="text-red-500 text-xs font-bold uppercase mt-1">{errors.name}</p>}
+            {errors.name && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-500 text-xs font-bold uppercase mt-1 px-2">{errors.name}</motion.p>}
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-gray-700 uppercase tracking-wider flex items-center gap-2">
-              <Mail size={16} className="text-brand-primary" /> Email Address
+          <div className="space-y-3">
+            <label className="text-xs font-black text-gray-600 uppercase tracking-widest flex items-center gap-2">
+              <Mail size={16} className="text-brand-secondary" /> Email Address
             </label>
             <input
               type="email"
               placeholder="john@example.com"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className={`w-full p-4 rounded-xl border-2 transition-all outline-none ${
-                errors.email ? "border-red-500 bg-red-50" : "border-gray-100 focus:border-brand-primary bg-gray-50/50"
-              }`}
+              className={`w-full p-5 rounded-2xl border-2 transition-all outline-none font-medium text-gray-800 ${errors.email ? "border-red-500 bg-red-50" : "border-gray-100 hover:border-brand-primary/30 focus:border-brand-primary focus:bg-brand-light/20 focus:shadow-[0_0_0_4px_rgba(81,164,50,0.1)] bg-gray-50/50"
+                }`}
             />
-            {errors.email && <p className="text-red-500 text-xs font-bold uppercase mt-1">{errors.email}</p>}
+            {errors.email && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-500 text-xs font-bold uppercase mt-1 px-2">{errors.email}</motion.p>}
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-gray-700 uppercase tracking-wider flex items-center gap-2">
-              <Phone size={16} className="text-brand-primary" /> Phone Number
+          <div className="space-y-3">
+            <label className="text-xs font-black text-gray-600 uppercase tracking-widest flex items-center gap-2">
+              <Phone size={16} className="text-brand-secondary" /> Phone Number
             </label>
             <input
               type="tel"
               placeholder="+234 800 000 0000"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className={`w-full p-4 rounded-xl border-2 transition-all outline-none ${
-                errors.phone ? "border-red-500 bg-red-50" : "border-gray-100 focus:border-brand-primary bg-gray-50/50"
-              }`}
+              className={`w-full p-5 rounded-2xl border-2 transition-all outline-none font-medium text-gray-800 ${errors.phone ? "border-red-500 bg-red-50" : "border-gray-100 hover:border-brand-primary/30 focus:border-brand-primary focus:bg-brand-light/20 focus:shadow-[0_0_0_4px_rgba(81,164,50,0.1)] bg-gray-50/50"
+                }`}
             />
-            {errors.phone && <p className="text-red-500 text-xs font-bold uppercase mt-1">{errors.phone}</p>}
+            {errors.phone && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-500 text-xs font-bold uppercase mt-1 px-2">{errors.phone}</motion.p>}
           </div>
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full mt-10 bg-brand-primary text-white py-5 rounded-2xl font-black text-lg uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-brand-dark transition-all disabled:bg-gray-400 shadow-xl shadow-brand-primary/20"
+            className="w-full mt-12 bg-brand-primary text-white py-6 rounded-2xl font-black text-lg uppercase tracking-[0.2em] flex items-center justify-center gap-4 hover:bg-brand-secondary transform hover:-translate-y-1 transition-all disabled:bg-gray-400 disabled:transform-none disabled:shadow-none shadow-[0_8px_20px_rgba(81,164,50,0.3)] hover:shadow-[0_12px_25px_rgba(81,164,50,0.4)]"
           >
             {isSubmitting ? (
               <>
-                <Loader2 className="animate-spin" />
-                Processing Booking...
+                <Loader2 className="animate-spin" size={24} />
+                Processing...
               </>
             ) : (
               <>
-                Confirm & Pay
-                <ArrowRight size={20} />
+                Confirm Booking
+                <ArrowRight size={24} />
               </>
             )}
           </button>
         </form>
-        
-        <p className="text-center text-xs text-gray-400 mt-6 font-medium italic">
-          By clicking Confirm & Pay, you agree to our terms of service and professional cleaning standards.
+
+        <p className="text-center text-xs text-gray-400 mt-8 font-semibold italic border-t border-gray-100 pt-8">
+          By confirming, you agree to our terms of service and professional cleaning standards.
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 }
