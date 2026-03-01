@@ -20,7 +20,7 @@ export default function CleanFreaksBooking() {
     plan: null,
     dates: [],
     timeSlot: null,
-    customer: { name: "", email: "", phone: "" },
+    customer: { name: "", email: "", phone: "", address: "" },
     bookingId: null,
   });
 
@@ -34,7 +34,7 @@ export default function CleanFreaksBooking() {
     setStep(2);
   };
 
-  const handleFormSubmit = async (customer: { name: string; email: string; phone: string }) => {
+  const handleFormSubmit = async (customer: { name: string; email: string; phone: string; address: string }) => {
     setIsSubmitting(true);
 
     try {
@@ -81,9 +81,9 @@ export default function CleanFreaksBooking() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
-        className="w-full py-8 flex justify-center bg-transparent"
+        className="w-full py-4 flex justify-center bg-transparent"
       >
-        <div className="relative h-20 w-64 md:h-28 md:w-[22rem] drop-shadow-sm hover:scale-105 transition-transform duration-300">
+        <div className="relative h-28 w-80 md:h-36 md:w-[32rem] drop-shadow-sm hover:scale-105 transition-transform duration-300">
           <Image
             src="/logo1.png"
             alt="Clean Freaks Logo"
@@ -102,7 +102,7 @@ export default function CleanFreaksBooking() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="max-w-5xl mx-auto text-center pt-24 pb-20 px-4 md:pt-32"
+            className="max-w-5xl mx-auto text-center pt-8 pb-12 px-4 md:pt-12"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
@@ -117,20 +117,11 @@ export default function CleanFreaksBooking() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-5xl sm:text-7xl md:text-[5.5rem] font-black text-[#373A3C] mb-8 tracking-tighter leading-[1.1]"
+              className="text-5xl sm:text-7xl md:text-[5.5rem] font-black text-[#373A3C] tracking-tighter leading-[1.1]"
             >
               A Cleaner Home, <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#51A432] to-[#00774D]">A Fresher Life.</span>
             </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="text-lg sm:text-xl md:text-2xl text-[#373A3C]/80 font-semibold max-w-3xl mx-auto leading-relaxed px-4"
-            >
-              Experience consistent excellence with our structured cleaning plans.
-              Designed for busy households who value quality and reliability.
-            </motion.p>
           </motion.section>
         )}
       </AnimatePresence>

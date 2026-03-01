@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { User, Mail, Phone, ArrowRight, Loader2 } from "lucide-react";
+import { User, Mail, Phone, MapPin, ArrowRight, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 
 type BookingFormProps = {
-  customer: { name: string; email: string; phone: string };
-  onSubmit: (data: { name: string; email: string; phone: string }) => void;
+  customer: { name: string; email: string; phone: string; address: string };
+  onSubmit: (data: { name: string; email: string; phone: string; address: string }) => void;
   isSubmitting: boolean;
 };
 
@@ -20,6 +20,7 @@ export default function BookingForm({ customer, onSubmit, isSubmitting }: Bookin
     if (!formData.email) newErrors.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Email is invalid";
     if (!formData.phone) newErrors.phone = "Phone number is required";
+    if (!formData.address) newErrors.address = "Address is required";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -37,9 +38,9 @@ export default function BookingForm({ customer, onSubmit, isSubmitting }: Bookin
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white p-10 md:p-14 rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100"
+        className="bg-white p-6 sm:p-10 md:p-14 rounded-[2rem] md:rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100"
       >
-        <h3 className="text-3xl font-black text-gray-900 mb-10 text-center tracking-tight">
+        <h3 className="text-2xl md:text-3xl font-black text-gray-900 mb-8 md:mb-10 text-center tracking-tight">
           Complete Your <span className="text-brand-primary">Booking</span>
         </h3>
 
@@ -87,6 +88,21 @@ export default function BookingForm({ customer, onSubmit, isSubmitting }: Bookin
                 }`}
             />
             {errors.phone && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-500 text-xs font-bold uppercase mt-1 px-2">{errors.phone}</motion.p>}
+          </div>
+
+          <div className="space-y-3">
+            <label className="text-xs font-black text-gray-600 uppercase tracking-widest flex items-center gap-2">
+              <MapPin size={16} className="text-brand-secondary" /> House Address
+            </label>
+            <input
+              type="text"
+              placeholder="123 Cleaning St, Lagos"
+              value={formData.address || ''}
+              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+              className={`w-full p-5 rounded-2xl border-2 transition-all outline-none font-medium text-gray-800 ${errors.address ? "border-red-500 bg-red-50" : "border-gray-100 hover:border-brand-primary/30 focus:border-brand-primary focus:bg-brand-light/20 focus:shadow-[0_0_0_4px_rgba(81,164,50,0.1)] bg-gray-50/50"
+                }`}
+            />
+            {errors.address && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-500 text-xs font-bold uppercase mt-1 px-2">{errors.address}</motion.p>}
           </div>
 
           <button

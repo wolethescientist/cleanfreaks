@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
         const sheets = google.sheets({ version: 'v4', auth });
         await sheets.spreadsheets.values.append({
           spreadsheetId: process.env.GOOGLE_SHEET_ID,
-          range: 'Sheet1!A:J',
+          range: 'Sheet1!A:K',
           valueInputOption: 'USER_ENTERED',
           requestBody: {
             values: [[
@@ -41,6 +41,7 @@ export async function POST(req: NextRequest) {
               customer.name,
               customer.email,
               customer.phone,
+              customer.address,
               plan.name,
               plan.priceFormatted,
               formattedDates,
@@ -73,6 +74,7 @@ export async function POST(req: NextRequest) {
             <p><strong>Customer:</strong> ${customer.name}</p>
             <p><strong>Email:</strong> ${customer.email}</p>
             <p><strong>Phone:</strong> ${customer.phone}</p>
+            <p><strong>Address:</strong> ${customer.address}</p>
             <p><strong>Plan:</strong> ${plan.name}</p>
             <p><strong>Schedule:</strong> <br/> ${formattedDates} <br/> at ${timeSlot}</p>
             <p><strong>Total Amount:</strong> ${plan.priceFormatted}</p>

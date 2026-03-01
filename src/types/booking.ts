@@ -18,6 +18,7 @@ export type BookingData = {
     name: string;
     email: string;
     phone: string;
+    address: string;
   };
   bookingId: string | null;
 };

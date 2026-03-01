@@ -16,8 +16,7 @@ type BookingCalendarProps = {
 };
 
 const TIME_SLOTS = [
-  "08:00 AM", "09:00 AM", "10:00 AM", "11:00 AM",
-  "12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM"
+  "09:00 AM", "12:00 PM", "03:00 PM"
 ];
 
 export default function BookingCalendar({ selectedDates, selectedTime, plan, onSelect }: BookingCalendarProps) {
@@ -42,7 +41,7 @@ export default function BookingCalendar({ selectedDates, selectedTime, plan, onS
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        className="grid grid-cols-1 lg:grid-cols-2 gap-12 bg-white p-8 md:p-12 rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100/50"
+        className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 bg-white p-6 sm:p-8 md:p-12 rounded-[2rem] md:rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100/50"
       >
         <div>
           <div className="flex items-center gap-4 mb-8">
@@ -80,7 +79,7 @@ export default function BookingCalendar({ selectedDates, selectedTime, plan, onS
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
             {TIME_SLOTS.map((t) => (
               <button
                 key={t}

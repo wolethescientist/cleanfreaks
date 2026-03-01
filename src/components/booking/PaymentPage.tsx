@@ -40,6 +40,7 @@ First Month Dates Selected: ${formattedDates}
 Time: ${booking.timeSlot}
 Customer: ${booking.customer.name}
 Phone: ${booking.customer.phone}
+Address: ${booking.customer.address}
 
 Please find the receipt attached below.`;
 
@@ -50,7 +51,7 @@ Please find the receipt attached below.`;
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden"
+        className="bg-white rounded-[2rem] md:rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden"
       >
         <div className="bg-brand-primary p-8 text-white text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full mb-4 backdrop-blur-sm">
@@ -65,7 +66,7 @@ Please find the receipt attached below.`;
           </div>
         </div>
 
-        <div className="p-8 md:p-12">
+        <div className="p-6 sm:p-8 md:p-12">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
             <div className="space-y-4">
               <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
