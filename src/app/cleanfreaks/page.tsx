@@ -83,11 +83,12 @@ export default function CleanFreaksBooking() {
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
         className="w-full py-4 flex justify-center bg-transparent"
       >
-        <div className="relative h-28 w-80 md:h-36 md:w-[32rem] drop-shadow-sm hover:scale-105 transition-transform duration-300">
+        <div className="relative h-32 w-11/12 max-w-[26rem] sm:h-36 sm:max-w-[30rem] md:h-44 md:max-w-[38rem] drop-shadow-sm hover:scale-105 transition-transform duration-300">
           <Image
             src="/logo1.png"
             alt="Clean Freaks Logo"
             fill
+            sizes="(max-width: 640px) 90vw, (max-width: 1024px) 480px, 600px"
             className="object-contain object-center"
             priority
           />
@@ -211,9 +212,9 @@ export default function CleanFreaksBooking() {
               <Image
                 src="/logo1.png"
                 alt="Clean Freaks Logo"
-                width={160}
-                height={60}
-                className="h-12 w-auto object-contain mb-2"
+                width={220}
+                height={80}
+                className="h-14 sm:h-16 w-auto object-contain mb-2"
               />
               <p className="text-sm font-medium leading-relaxed max-w-xs text-gray-500">
                 Elevating your living spaces with meticulous, reliable, and recurring professional cleaning services.
