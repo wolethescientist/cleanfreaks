@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
     if (process.env.RESEND_API_KEY) {
       try {
         const adminEmail = process.env.ADMIN_EMAIL || 'admin@cleanfreaks.com';
-        const senderEmail = process.env.SENDER_EMAIL || 'bookings@cleanfreaks.com';
+        const senderEmail = process.env.SENDER_EMAIL || 'noreply@henamfacility.com.ng';
 
         // Email to Admin
         await resend.emails.send({
