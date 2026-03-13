@@ -83,14 +83,13 @@ export default function CleanFreaksBooking() {
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
         className="w-full py-4 flex justify-center bg-transparent"
       >
-        <div className="w-full max-w-[22rem] sm:max-w-[26rem] md:max-w-[30rem] px-4 drop-shadow-sm hover:scale-105 transition-transform duration-300">
+        <div className="px-4 drop-shadow-sm hover:scale-105 transition-transform duration-300">
           <Image
             src="/logo1.png"
             alt="Clean Freaks Logo"
             width={920}
             height={260}
-            sizes="(max-width: 640px) 96vw, (max-width: 1024px) 600px, 740px"
-            className="w-full h-auto object-contain object-center"
+            className="h-20 sm:h-24 md:h-28 w-auto object-contain object-center"
             priority
           />
         </div>
