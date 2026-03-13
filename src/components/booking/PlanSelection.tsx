@@ -12,7 +12,7 @@ type PlanSelectionProps = {
 
 export default function PlanSelection({ selectedPlan, onSelect }: PlanSelectionProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto py-12 px-4">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto py-12 px-4">
       {PLANS.map((plan, index) => (
         <motion.div
           key={plan.id}
@@ -30,17 +30,23 @@ export default function PlanSelection({ selectedPlan, onSelect }: PlanSelectionP
             </div>
           )}
 
-          <div className="mb-8">
-            <h3 className="text-sm font-black text-brand-secondary tracking-[0.2em] uppercase mb-4">
+          {plan.popular && (
+            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-brand-primary text-white text-[10px] md:text-xs font-black px-4 py-1 rounded-full shadow-md uppercase tracking-wider whitespace-nowrap border-2 border-white z-20">
+              Most Popular
+            </div>
+          )}
+
+          <div className="mb-8 mt-2">
+            <h3 className="text-sm font-black text-brand-secondary tracking-[0.2em] uppercase mb-4 min-h-[40px]">
               {plan.name}
             </h3>
-            <div className="flex items-baseline gap-2 mb-2">
-              <span className="text-5xl font-black text-[#373A3C] tracking-tighter">{plan.priceFormatted}</span>
-              <span className="text-gray-400 font-bold text-lg">/ 3 Months</span>
+            <div className="flex flex-col mb-4">
+              <span className="text-4xl md:text-5xl font-black text-[#373A3C] tracking-tighter">{plan.priceFormatted}</span>
+              <span className="text-gray-400 font-bold text-sm md:text-lg mt-1">{plan.period}</span>
             </div>
-            <div className="bg-white/80 inline-block px-4 py-2 rounded-xl mt-3 border border-brand-primary/10 shadow-sm">
+            <div className="bg-white/80 inline-block px-4 py-2 rounded-xl border border-brand-primary/10 shadow-sm">
               <p className="text-brand-primary font-black text-sm tracking-wide">{plan.sessions}</p>
-              <p className="text-gray-500 text-xs font-semibold mt-0.5">{plan.visits}</p>
+              <p className="text-gray-500 text-[11px] md:text-xs font-semibold mt-0.5">{plan.visits}</p>
             </div>
           </div>
 
@@ -49,16 +55,16 @@ export default function PlanSelection({ selectedPlan, onSelect }: PlanSelectionP
             {plan.includes.map((item, idx) => (
               <div key={idx} className="flex items-start gap-4">
                 <div className="mt-0.5 bg-brand-primary/10 p-1 rounded-full text-brand-primary shrink-0 shadow-sm">
-                  <Check size={14} strokeWidth={3} />
+                  <Check size={12} strokeWidth={4} />
                 </div>
-                <span className="text-[#373A3C]/80 text-base font-semibold leading-relaxed">{item}</span>
+                <span className="text-[#373A3C]/80 text-[13px] md:text-sm font-semibold leading-relaxed">{item}</span>
               </div>
             ))}
           </div>
 
-          <div className="mt-auto border-t border-gray-100/60 pt-8">
-            <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest mb-3">Best For:</p>
-            <p className="text-base text-[#373A3C]/90 font-bold mb-8 italic leading-relaxed">&quot;{plan.bestFor}&quot;</p>
+          <div className="mt-auto border-t border-gray-100/60 pt-6">
+            <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest mb-2">Best For:</p>
+            <p className="text-[13px] text-[#373A3C]/90 font-medium mb-8 leading-relaxed">&quot;{plan.bestFor}&quot;</p>
 
             <button
               onClick={() => onSelect(plan)}

@@ -1,13 +1,15 @@
 export type Plan = {
-  id: 'standard' | 'premium';
+  id: string;
   name: string;
   price: number;
   priceFormatted: string;
+  period: string;
   sessions: string;
   visits: string;
   includes: string[];
   bestFor: string;
   maxSessions: number;
+  popular?: boolean;
 };
 
 export type BookingData = {

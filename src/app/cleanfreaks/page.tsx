@@ -83,7 +83,7 @@ export default function CleanFreaksBooking() {
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
         className="w-full py-4 flex justify-center bg-transparent"
       >
-        <div className="w-[96%] max-w-[30rem] sm:max-w-[36rem] md:max-w-[46rem] drop-shadow-sm hover:scale-105 transition-transform duration-300">
+        <div className="w-[90%] max-w-[16rem] sm:max-w-[18rem] md:max-w-[22rem] drop-shadow-sm hover:scale-105 transition-transform duration-300">
           <Image
             src="/logo1.png"
             alt="Clean Freaks Logo"
@@ -99,31 +99,31 @@ export default function CleanFreaksBooking() {
       {/* Hero Section (Only on Step 0) */}
       <AnimatePresence mode="wait">
         {step === 0 && (
-          <motion.section
+            <motion.section
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="max-w-5xl mx-auto text-center pt-8 pb-12 px-4 md:pt-12"
+            className="max-w-5xl mx-auto text-center pt-2 pb-8 px-4 md:pt-4"
           >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 bg-[#E7F5E4] text-[#00774D] px-6 py-3 rounded-full text-xs md:text-sm font-black uppercase tracking-widest mb-10 border border-[#51A432]/20 shadow-sm"
-            >
-              <Sparkles size={18} className="text-[#51A432] animate-pulse" />
-              Quarterly Cleaning Subscriptions
-            </motion.div>
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-5xl sm:text-7xl md:text-[5.5rem] font-black text-[#373A3C] tracking-tighter leading-[1.1]"
+              transition={{ delay: 0.2 }}
+              className="text-5xl sm:text-6xl md:text-[5.5rem] font-black text-[#373A3C] tracking-tighter leading-[1.1] mb-6 md:mb-10"
             >
               A Cleaner Home, <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#51A432] to-[#00774D]">A Fresher Life.</span>
             </motion.h1>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3 }}
+              className="inline-flex items-center gap-2 bg-[#E7F5E4] text-[#00774D] px-6 py-3 rounded-full text-[10px] md:text-sm font-black uppercase tracking-widest border border-[#51A432]/20 shadow-sm"
+            >
+              <Sparkles size={18} className="text-[#51A432] animate-pulse" />
+              CleanFreaks Service Plans
+            </motion.div>
           </motion.section>
         )}
       </AnimatePresence>
@@ -243,7 +243,7 @@ export default function CleanFreaksBooking() {
             <div className="flex flex-col items-center md:items-start space-y-4">
               <h4 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-2">Follow Us</h4>
               <div className="flex items-center gap-4">
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="bg-gray-50 hover:bg-brand-primary hover:text-white text-gray-500 hover:-translate-y-1 p-3 rounded-2xl transition-all duration-300 shadow-sm hover:shadow-md">
+                <a href="https://www.instagram.com/henamfacility.ng/" target="_blank" rel="noopener noreferrer" className="bg-gray-50 hover:bg-brand-primary hover:text-white text-gray-500 hover:-translate-y-1 p-3 rounded-2xl transition-all duration-300 shadow-sm hover:shadow-md">
                   <Instagram size={20} />
                 </a>
                 <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="bg-gray-50 hover:bg-brand-primary hover:text-white text-gray-500 hover:-translate-y-1 p-3 rounded-2xl transition-all duration-300 shadow-sm hover:shadow-md">
