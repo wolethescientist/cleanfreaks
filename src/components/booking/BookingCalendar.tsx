@@ -65,9 +65,12 @@ export default function BookingCalendar({ selectedDates, selectedTime, plan, onS
                 today: { color: '#00774D', fontWeight: '900', borderBottom: '3px solid #E7F5E4' }
               }}
               styles={{
-                root: { width: '100%' },
+                root: { width: '100%', display: 'flex', justifyContent: 'center' },
                 month: { width: '100%' },
+                caption: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
                 table: { width: '100%' },
+                head_cell: { textAlign: 'center' },
+                cell: { textAlign: 'center' },
               }}
               className="font-sans"
             />
