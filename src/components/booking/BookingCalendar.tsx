@@ -4,7 +4,7 @@ import { useState } from "react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import { motion } from "framer-motion";
-import { Calendar as CalendarIcon, Clock, ChevronRight, ChevronLeft } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, ChevronRight } from "lucide-react";
 import { Plan } from "@/types/booking";
 
 type BookingCalendarProps = {
@@ -52,7 +52,7 @@ export default function BookingCalendar({ selectedDates, selectedTime, plan, onS
               <p className="text-sm text-gray-500 font-medium italic">Choose up to {maxDates} dates for your first month</p>
             </div>
           </div>
-          <div className="calendar-container border-[3px] rounded-[2rem] p-2 sm:p-4 border-brand-light/60 bg-white shadow-sm flex items-center justify-center transition-all hover:border-brand-light hover:shadow-md overflow-hidden w-full">
+          <div className="calendar-container overflow-hidden w-full flex items-center justify-center">
             <DayPicker
               mode="multiple"
               max={maxDates}
