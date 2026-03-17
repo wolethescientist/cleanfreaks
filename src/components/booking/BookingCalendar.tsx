@@ -64,7 +64,12 @@ export default function BookingCalendar({ selectedDates, selectedTime, plan, onS
                 selected: { backgroundColor: '#51A432', color: 'white', borderRadius: '14px', fontWeight: 'bold' },
                 today: { color: '#00774D', fontWeight: '900', borderBottom: '3px solid #E7F5E4' }
               }}
-              className="mx-auto font-sans w-full max-w-full"
+              styles={{
+                root: { width: '100%' },
+                month: { width: '100%' },
+                table: { width: '100%' },
+              }}
+              className="font-sans"
             />
           </div>
         </div>
