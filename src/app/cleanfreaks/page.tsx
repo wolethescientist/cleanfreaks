@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { BookingData, Plan } from "@/types/booking";
 import StepProgress from "@/components/booking/StepProgress";
@@ -15,6 +15,10 @@ const STEPS = ["Proceed", "Schedule", "Details", "Payment"];
 
 export default function CleanFreaksBooking() {
   const [step, setStep] = useState(0);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [step]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookingData, setBookingData] = useState<BookingData>({
     plan: null,

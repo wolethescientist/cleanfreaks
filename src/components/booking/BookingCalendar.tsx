@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { format, addMonths, startOfToday, isBefore, isSameDay } from "date-fns";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import { motion } from "framer-motion";
@@ -22,7 +21,7 @@ const TIME_SLOTS = [
 export default function BookingCalendar({ selectedDates, selectedTime, plan, onSelect }: BookingCalendarProps) {
   const [dates, setDates] = useState<Date[]>(selectedDates || []);
   const [time, setTime] = useState<string | null>(selectedTime);
-  const today = startOfToday();
+  const aprilStart = new Date(2026, 3, 1); // April 1, 2026
 
   const maxDates = plan?.maxSessions || 12;
 
@@ -53,18 +52,19 @@ export default function BookingCalendar({ selectedDates, selectedTime, plan, onS
               <p className="text-sm text-gray-500 font-medium italic">Choose up to {maxDates} dates for your first month</p>
             </div>
           </div>
-          <div className="calendar-container border-[3px] rounded-[2rem] p-6 border-brand-light/60 bg-white shadow-sm flex items-center justify-center transition-all hover:border-brand-light hover:shadow-md">
+          <div className="calendar-container border-[3px] rounded-[2rem] p-2 sm:p-4 border-brand-light/60 bg-white shadow-sm flex items-center justify-center transition-all hover:border-brand-light hover:shadow-md overflow-hidden w-full">
             <DayPicker
               mode="multiple"
               max={maxDates}
               selected={dates}
               onSelect={(d) => setDates(d as Date[])}
-              disabled={{ before: today }}
+              disabled={{ before: aprilStart }}
+              defaultMonth={aprilStart}
               modifiersStyles={{
                 selected: { backgroundColor: '#51A432', color: 'white', borderRadius: '14px', fontWeight: 'bold' },
                 today: { color: '#00774D', fontWeight: '900', borderBottom: '3px solid #E7F5E4' }
               }}
-              className="mx-auto font-sans"
+              className="mx-auto font-sans w-full max-w-full"
             />
           </div>
         </div>

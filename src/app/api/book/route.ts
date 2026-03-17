@@ -60,26 +60,26 @@ export async function POST(req: NextRequest) {
     // 3. Send Emails via Resend (if API key exists)
     if (process.env.RESEND_API_KEY) {
       try {
-        const adminEmail = process.env.ADMIN_EMAIL || 'oluwalz247@gmail.com';
+        // const adminEmail = process.env.ADMIN_EMAIL || 'oluwalz247@gmail.com';
         const senderEmail = process.env.SENDER_EMAIL || 'noreply@henamfacility.com.ng';
 
-        // Email to Admin
-        await resend.emails.send({
-          to: adminEmail,
-          from: senderEmail,
-          subject: `New Booking: ${bookingId} - ${customer.name}`,
-          html: `
-            <h3>New Booking Received</h3>
-            <p><strong>Booking ID:</strong> ${bookingId}</p>
-            <p><strong>Customer:</strong> ${customer.name}</p>
-            <p><strong>Email:</strong> ${customer.email}</p>
-            <p><strong>Phone:</strong> ${customer.phone}</p>
-            <p><strong>Address:</strong> ${customer.address}</p>
-            <p><strong>Plan:</strong> ${plan.name}</p>
-            <p><strong>Schedule:</strong> <br/> ${formattedDates} <br/> at ${timeSlot}</p>
-            <p><strong>Total Amount:</strong> ${plan.priceFormatted}</p>
-          `,
-        });
+        // Email to Admin (disabled)
+        // await resend.emails.send({
+        //   to: adminEmail,
+        //   from: senderEmail,
+        //   subject: `New Booking: ${bookingId} - ${customer.name}`,
+        //   html: `
+        //     <h3>New Booking Received</h3>
+        //     <p><strong>Booking ID:</strong> ${bookingId}</p>
+        //     <p><strong>Customer:</strong> ${customer.name}</p>
+        //     <p><strong>Email:</strong> ${customer.email}</p>
+        //     <p><strong>Phone:</strong> ${customer.phone}</p>
+        //     <p><strong>Address:</strong> ${customer.address}</p>
+        //     <p><strong>Plan:</strong> ${plan.name}</p>
+        //     <p><strong>Schedule:</strong> <br/> ${formattedDates} <br/> at ${timeSlot}</p>
+        //     <p><strong>Total Amount:</strong> ${plan.priceFormatted}</p>
+        //   `,
+        // });
 
         // Email to Customer
         await resend.emails.send({
