@@ -2,27 +2,69 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { google } from 'googleapis';
 import { format } from 'date-fns';
+import { fetchAvailabilityData, invalidateAvailabilityCache, MAX_PER_SLOT } from '@/app/api/availability/route';
 
-// Initialize Resend
 const resend = new Resend(process.env.RESEND_API_KEY || '');
 
+const TAG = '[BOOKING]';
+
 export async function POST(req: NextRequest) {
+  const requestTime = new Date().toISOString();
+  console.log(`${TAG} ---- New booking request at ${requestTime} ----`);
+
   try {
     const data = await req.json();
     const { plan, dates, timeSlot, customer } = data;
 
-    // 1. Generate Unique Booking ID (e.g., CF-YYYYMMDD-001)
+    console.log(`${TAG} Customer: ${customer?.name} | Email: ${customer?.email} | Plan: ${plan?.name} | Time: ${timeSlot} | Dates: ${dates?.length}`);
+
+    // 1. Generate booking ID
     const today = new Date();
     const dateStr = format(today, 'yyyyMMdd');
     const randomStr = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
     const bookingId = `CF-${dateStr}-${randomStr}`;
+    console.log(`${TAG} Generated booking ID: ${bookingId}`);
 
     const formattedDates = dates && dates.length > 0
       ? dates.map((d: string | Date) => format(new Date(d), 'MMMM d, yyyy')).join(', ')
       : 'N/A';
 
-    // 2. Save to Google Sheets (if credentials exist)
+    const parsedDateStrings: string[] = dates
+      ? dates.map((d: string | Date) => format(new Date(d), 'MMMM d, yyyy'))
+      : [];
+
+    // 2. Double-check availability (fresh Sheets read, bypass cache)
+    if (parsedDateStrings.length > 0 && timeSlot) {
+      console.log(`${TAG} Running availability double-check for ${parsedDateStrings.length} date(s) at ${timeSlot}...`);
+      const availability = await fetchAvailabilityData(true);
+
+      for (const ds of parsedDateStrings) {
+        const count = availability.slotCounts[ds]?.[timeSlot] || 0;
+        console.log(`${TAG}   ${ds} @ ${timeSlot}: ${count}/${MAX_PER_SLOT} booked`);
+      }
+
+      const overbooked = parsedDateStrings.find(ds => {
+        const count = availability.slotCounts[ds]?.[timeSlot] || 0;
+        return count >= MAX_PER_SLOT;
+      });
+
+      if (overbooked) {
+        console.warn(`${TAG} SLOT_FULL — ${overbooked} @ ${timeSlot} is at capacity. Rejecting ${bookingId}`);
+        return NextResponse.json({
+          success: false,
+          error: 'SLOT_FULL',
+          message: `Sorry, the ${timeSlot} slot on ${overbooked} is now fully booked. Please go back and choose a different time or date.`,
+        }, { status: 409 });
+      }
+
+      console.log(`${TAG} Availability check passed — all slots have capacity`);
+    } else {
+      console.log(`${TAG} Skipping availability check (no dates or no timeSlot)`);
+    }
+
+    // 3. Save to Google Sheets
     if (process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL && process.env.GOOGLE_PRIVATE_KEY && process.env.GOOGLE_SHEET_ID) {
+      console.log(`${TAG} Saving to Google Sheets...`);
       try {
         const auth = new google.auth.JWT({
           email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
@@ -47,41 +89,25 @@ export async function POST(req: NextRequest) {
               formattedDates,
               timeSlot,
               new Date().toISOString(),
-              "Not Paid"
+              'Not Paid',
             ]],
           },
         });
+        console.log(`${TAG} Saved to Sheets successfully — invalidating availability cache`);
+        invalidateAvailabilityCache();
       } catch (sheetError) {
-        console.error('Google Sheets Error:', sheetError);
-        // Continue even if sheets fail, but log it
+        console.error(`${TAG} Google Sheets write FAILED for ${bookingId}:`, sheetError);
+        // Continue — customer still gets a confirmation, but flag clearly for manual fix
       }
+    } else {
+      console.warn(`${TAG} Google Sheets credentials not configured — ${bookingId} NOT saved to Sheets`);
     }
 
-    // 3. Send Emails via Resend (if API key exists)
+    // 4. Send confirmation email
     if (process.env.RESEND_API_KEY) {
+      console.log(`${TAG} Sending confirmation email to ${customer.email}...`);
       try {
-        // const adminEmail = process.env.ADMIN_EMAIL || 'oluwalz247@gmail.com';
         const senderEmail = process.env.SENDER_EMAIL || 'noreply@henamfacility.com.ng';
-
-        // Email to Admin (disabled)
-        // await resend.emails.send({
-        //   to: adminEmail,
-        //   from: senderEmail,
-        //   subject: `New Booking: ${bookingId} - ${customer.name}`,
-        //   html: `
-        //     <h3>New Booking Received</h3>
-        //     <p><strong>Booking ID:</strong> ${bookingId}</p>
-        //     <p><strong>Customer:</strong> ${customer.name}</p>
-        //     <p><strong>Email:</strong> ${customer.email}</p>
-        //     <p><strong>Phone:</strong> ${customer.phone}</p>
-        //     <p><strong>Address:</strong> ${customer.address}</p>
-        //     <p><strong>Plan:</strong> ${plan.name}</p>
-        //     <p><strong>Schedule:</strong> <br/> ${formattedDates} <br/> at ${timeSlot}</p>
-        //     <p><strong>Total Amount:</strong> ${plan.priceFormatted}</p>
-        //   `,
-        // });
-
-        // Email to Customer
         await resend.emails.send({
           to: customer.email,
           from: senderEmail,
@@ -100,22 +126,26 @@ export async function POST(req: NextRequest) {
             </div>
           `,
         });
+        console.log(`${TAG} Confirmation email sent to ${customer.email}`);
       } catch (emailError) {
-        console.error('Resend Email Error:', emailError);
+        console.error(`${TAG} Email send FAILED for ${bookingId}:`, emailError);
       }
+    } else {
+      console.warn(`${TAG} RESEND_API_KEY not configured — email NOT sent for ${bookingId}`);
     }
 
+    console.log(`${TAG} ✓ Booking ${bookingId} completed successfully`);
     return NextResponse.json({
       success: true,
       bookingId,
-      message: "Booking processed successfully"
+      message: 'Booking processed successfully',
     });
 
   } catch (error) {
-    console.error('Booking API Error:', error);
+    console.error(`${TAG} Unhandled error:`, error);
     return NextResponse.json({
       success: false,
-      error: "Internal Server Error"
+      error: 'Internal Server Error',
     }, { status: 500 });
   }
 }

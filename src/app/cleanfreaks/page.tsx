@@ -9,7 +9,7 @@ import BookingCalendar from "@/components/booking/BookingCalendar";
 import BookingForm from "@/components/booking/BookingForm";
 import PaymentPage from "@/components/booking/PaymentPage";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, ArrowLeft, Phone, Instagram, Facebook, Twitter } from "lucide-react";
+import { Sparkles, ArrowLeft, Phone, Instagram, Facebook, Twitter, Tag } from "lucide-react";
 
 const STEPS = ["Proceed", "Schedule", "Details", "Payment"];
 
@@ -61,6 +61,9 @@ export default function CleanFreaksBooking() {
           bookingId: result.bookingId,
         });
         setStep(3);
+      } else if (result.error === "SLOT_FULL") {
+        alert(result.message);
+        setStep(1); // Send them back to reschedule
       } else {
         alert("Something went wrong. Please try again.");
       }
@@ -118,15 +121,30 @@ export default function CleanFreaksBooking() {
               A Cleaner Home, <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#51A432] to-[#00774D]">A Fresher Life.</span>
             </motion.h1>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3 }}
-              className="inline-flex items-center gap-2 bg-[#E7F5E4] text-[#00774D] px-6 py-3 rounded-full text-[10px] md:text-sm font-black uppercase tracking-widest border border-[#51A432]/20 shadow-sm"
-            >
-              <Sparkles size={18} className="text-[#51A432] animate-pulse" />
-              CleanFreaks Service Plans
-            </motion.div>
+            <div className="flex flex-col items-center gap-4">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3 }}
+                className="inline-flex items-center gap-2 bg-[#E7F5E4] text-[#00774D] px-6 py-3 rounded-full text-[10px] md:text-sm font-black uppercase tracking-widest border border-[#51A432]/20 shadow-sm"
+              >
+                <Sparkles size={18} className="text-[#51A432] animate-pulse" />
+                CleanFreaks Service Plans
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="inline-flex items-center gap-3 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/70 px-5 py-2.5 rounded-full shadow-sm"
+              >
+                <Tag size={14} className="text-amber-500 shrink-0" />
+                <span className="text-xs md:text-sm font-bold text-amber-700 tracking-wide">
+                  Founders Launch Offer — valid till 15th April
+                </span>
+                <span className="hidden sm:block w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+              </motion.div>
+            </div>
           </motion.section>
         )}
       </AnimatePresence>

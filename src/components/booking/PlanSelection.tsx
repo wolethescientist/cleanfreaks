@@ -47,6 +47,9 @@ export default function PlanSelection({ selectedPlan, onSelect }: PlanSelectionP
             <div className="bg-white/80 inline-block px-4 py-2 rounded-xl border border-brand-primary/10 shadow-sm">
               <p className="text-brand-primary font-black text-sm tracking-wide">{plan.sessions}</p>
               <p className="text-gray-500 text-[11px] md:text-xs font-semibold mt-0.5">{plan.visits}</p>
+              {plan.pricePerSession && (
+                <p className="text-[#00774D] text-[11px] md:text-xs font-black mt-1 tracking-wide">{plan.pricePerSession}</p>
+              )}
             </div>
           </div>
 

@@ -26,6 +26,7 @@ export const PLANS: Plan[] = [
     priceFormatted: "₦30,000",
     period: "per month",
     sessions: "4 cleaning sessions (1 per week)",
+    pricePerSession: "₦7,500 per session",
     visits: "Strict 3-hour service per visit",
     includes: [
       "Professional dusting and surface care",
@@ -37,6 +38,8 @@ export const PLANS: Plan[] = [
     ],
     bestFor: "Ideal for busy households that want their home consistently clean. Note: Excludes construction dirt, post-renovation cleaning, or heavily soiled environments.",
     maxSessions: 4,
+    maxWeekendDays: 2,
+    weekendLimitPerMonth: false,
     popular: true
   },
   {
@@ -45,7 +48,8 @@ export const PLANS: Plan[] = [
     price: 159000,
     priceFormatted: "₦159,000",
     period: "per quarter",
-    sessions: "24 cleaning sessions (2 per week)",
+    sessions: "24 cleaning sessions (2 per week) — spread over 3 months",
+    pricePerSession: "₦6,625 per session",
     visits: "Strict 3-hour service per visit",
     includes: [
       "Comprehensive surface dusting and care",
@@ -56,6 +60,8 @@ export const PLANS: Plan[] = [
       "Priority scheduling"
     ],
     bestFor: "Best for large homes or households requiring frequent professional cleaning. Note: Excludes construction dirt, post-renovation cleaning, or heavily soiled environments.",
-    maxSessions: 24
+    maxSessions: 24,
+    maxWeekendDays: 2,
+    weekendLimitPerMonth: true
   }
 ];

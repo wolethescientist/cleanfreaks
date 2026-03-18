@@ -9,6 +9,9 @@ export type Plan = {
   includes: string[];
   bestFor: string;
   maxSessions: number;
+  maxWeekendDays?: number;
+  weekendLimitPerMonth?: boolean;
+  pricePerSession?: string;
   popular?: boolean;
 };
 
