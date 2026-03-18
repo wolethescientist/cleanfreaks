@@ -121,19 +121,19 @@ export default function BookingCalendar({ selectedDates, selectedTime, plan, onS
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-12 px-4">
+    <div className="max-w-4xl mx-auto py-4 sm:py-8 md:py-12 px-3 sm:px-4">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 bg-white p-6 sm:p-8 md:p-12 rounded-[2rem] md:rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100/50"
+        className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 bg-white p-4 sm:p-6 md:p-10 rounded-[1.5rem] md:rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100/50"
       >
         <div>
-          <div className="flex items-center gap-4 mb-6">
-            <div className="p-4 bg-brand-light text-brand-secondary rounded-2xl shadow-sm">
-              <CalendarIcon size={24} />
+          <div className="flex items-center gap-3 mb-5">
+            <div className="p-3 md:p-4 bg-brand-light text-brand-secondary rounded-2xl shadow-sm shrink-0">
+              <CalendarIcon size={20} />
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="text-xl font-bold text-gray-900">Select Dates</h3>
+              <h3 className="text-base md:text-xl font-bold text-gray-900">Select Dates</h3>
               <p className="text-sm text-gray-500 font-medium italic">
                 {dates.length === maxDates
                   ? "All sessions selected — you're good to go!"
@@ -141,8 +141,8 @@ export default function BookingCalendar({ selectedDates, selectedTime, plan, onS
               </p>
             </div>
             <div className={`shrink-0 text-right ${dates.length === maxDates ? 'text-[#51A432]' : 'text-gray-400'}`}>
-              <span className="text-2xl font-black">{dates.length}</span>
-              <span className="text-sm font-bold">/{maxDates}</span>
+              <span className="text-xl md:text-2xl font-black">{dates.length}</span>
+              <span className="text-xs md:text-sm font-bold">/{maxDates}</span>
             </div>
           </div>
 
@@ -233,16 +233,16 @@ export default function BookingCalendar({ selectedDates, selectedTime, plan, onS
         </div>
 
         <div>
-          <div className="flex items-center gap-4 mb-8">
-            <div className="p-4 bg-brand-light text-brand-secondary rounded-2xl shadow-sm">
-              <Clock size={24} />
+          <div className="flex items-center gap-3 mb-5 md:mb-8 mt-2 lg:mt-0">
+            <div className="p-3 md:p-4 bg-brand-light text-brand-secondary rounded-2xl shadow-sm shrink-0">
+              <Clock size={20} />
             </div>
             <div>
-              <h3 className="text-2xl font-black text-gray-900 tracking-tight">Select Time Slot</h3>
+              <h3 className="text-lg md:text-2xl font-black text-gray-900 tracking-tight">Select Time Slot</h3>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
+          <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4">
             {TIME_SLOTS.map((t) => {
               const remaining = getSlotRemaining(t);
               const slotFull = dates.length > 0 && remaining <= 0;
@@ -252,7 +252,7 @@ export default function BookingCalendar({ selectedDates, selectedTime, plan, onS
                   key={t}
                   onClick={() => !slotFull && handleTimeSelect(t)}
                   disabled={isDisabledSlot}
-                  className={`py-4 px-4 rounded-2xl font-bold transition-all border-2 flex flex-col items-center justify-center gap-1 ${
+                  className={`py-3 md:py-4 px-2 md:px-4 rounded-xl md:rounded-2xl font-bold transition-all border-2 flex flex-col items-center justify-center gap-1 text-sm md:text-base ${
                     slotFull
                       ? "bg-gray-50 text-gray-300 border-gray-100 cursor-not-allowed"
                       : time === t
@@ -285,7 +285,7 @@ export default function BookingCalendar({ selectedDates, selectedTime, plan, onS
             <motion.div
               initial={{ opacity: 0, y: 10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              className="mt-10 flex flex-col gap-4"
+              className="mt-5 md:mt-10 flex flex-col gap-3 md:gap-4"
             >
               <div className="p-5 bg-[#E7F5E4]/50 rounded-2xl border-2 border-[#51A432]/20 shadow-sm flex items-center justify-between">
                 <div>

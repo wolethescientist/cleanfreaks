@@ -12,16 +12,16 @@ type PlanSelectionProps = {
 
 export default function PlanSelection({ selectedPlan, onSelect }: PlanSelectionProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto py-12 px-4">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto py-6 sm:py-10 md:py-12 px-4">
       {PLANS.map((plan, index) => (
         <motion.div
           key={plan.id}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.2 }}
-          className={`relative p-10 md:p-12 rounded-[2.5rem] transition-all duration-500 flex flex-col ${selectedPlan?.id === plan.id
-            ? "bg-[#E7F5E4]/80 shadow-[0_12px_40px_rgba(81,164,50,0.15)] scale-105 z-10 border border-[#51A432]/20"
-            : "bg-white border hover:border-transparent border-transparent shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_35px_rgba(0,0,0,0.08)] hover:-translate-y-2"
+          className={`relative p-6 sm:p-8 md:p-10 rounded-[2rem] md:rounded-[2.5rem] transition-all duration-500 flex flex-col ${selectedPlan?.id === plan.id
+            ? "bg-[#E7F5E4]/80 shadow-[0_12px_40px_rgba(81,164,50,0.15)] md:scale-105 z-10 border border-[#51A432]/20"
+            : "bg-white border hover:border-transparent border-transparent shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_35px_rgba(0,0,0,0.08)] md:hover:-translate-y-2"
             }`}
         >
           {selectedPlan?.id === plan.id && (
@@ -36,7 +36,7 @@ export default function PlanSelection({ selectedPlan, onSelect }: PlanSelectionP
             </div>
           )}
 
-          <div className="mb-8 mt-2">
+          <div className="mb-6 md:mb-8 mt-2">
             <h3 className="text-sm font-black text-brand-secondary tracking-[0.2em] uppercase mb-4 min-h-[40px]">
               {plan.name}
             </h3>
@@ -53,7 +53,7 @@ export default function PlanSelection({ selectedPlan, onSelect }: PlanSelectionP
             </div>
           </div>
 
-          <div className="space-y-4 mb-10 flex-grow">
+          <div className="space-y-3 md:space-y-4 mb-6 md:mb-10 flex-grow">
             <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6">What&apos;s Included:</p>
             {plan.includes.map((item, idx) => (
               <div key={idx} className="flex items-start gap-4">
