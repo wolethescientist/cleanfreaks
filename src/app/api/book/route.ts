@@ -103,11 +103,13 @@ export async function POST(req: NextRequest) {
       console.warn(`${TAG} Google Sheets credentials not configured — ${bookingId} NOT saved to Sheets`);
     }
 
-    // 4. Send confirmation email
+    // 4. Send confirmation email to customer + admin
     if (process.env.RESEND_API_KEY) {
+      const senderEmail = process.env.SENDER_EMAIL || 'noreply@henamfacility.com.ng';
+
+      // Customer confirmation
       console.log(`${TAG} Sending confirmation email to ${customer.email}...`);
       try {
-        const senderEmail = process.env.SENDER_EMAIL || 'noreply@henamfacility.com.ng';
         await resend.emails.send({
           to: customer.email,
           from: senderEmail,
@@ -128,10 +130,47 @@ export async function POST(req: NextRequest) {
         });
         console.log(`${TAG} Confirmation email sent to ${customer.email}`);
       } catch (emailError) {
-        console.error(`${TAG} Email send FAILED for ${bookingId}:`, emailError);
+        console.error(`${TAG} Customer email send FAILED for ${bookingId}:`, emailError);
+      }
+
+      // Admin notification
+      const adminEmail = process.env.ADMIN_EMAIL;
+      if (adminEmail) {
+        console.log(`${TAG} Sending admin notification to ${adminEmail}...`);
+        try {
+          await resend.emails.send({
+            to: adminEmail,
+            from: senderEmail,
+            subject: `New Booking: ${bookingId} — ${customer.name}`,
+            html: `
+              <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee;">
+                <h2 style="color: #2D5A27;">New Booking Received</h2>
+                <div style="background: #F1F8F1; padding: 15px; border-radius: 10px; margin-bottom: 16px;">
+                  <p style="margin: 4px 0;"><strong>Booking ID:</strong> ${bookingId}</p>
+                  <p style="margin: 4px 0;"><strong>Plan:</strong> ${plan.name} — ${plan.priceFormatted}</p>
+                  <p style="margin: 4px 0;"><strong>Time Slot:</strong> ${timeSlot}</p>
+                  <p style="margin: 4px 0;"><strong>Dates:</strong><br/>${formattedDates}</p>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 10px; border: 1px solid #eee;">
+                  <p style="margin: 4px 0; font-weight: bold; color: #555;">Customer Details</p>
+                  <p style="margin: 4px 0;"><strong>Name:</strong> ${customer.name}</p>
+                  <p style="margin: 4px 0;"><strong>Email:</strong> ${customer.email}</p>
+                  <p style="margin: 4px 0;"><strong>Phone:</strong> ${customer.phone}</p>
+                  <p style="margin: 4px 0;"><strong>Address:</strong> ${customer.address}</p>
+                </div>
+                <p style="color: #888; font-size: 12px; margin-top: 16px;">Booked at ${requestTime}</p>
+              </div>
+            `,
+          });
+          console.log(`${TAG} Admin notification sent to ${adminEmail}`);
+        } catch (adminEmailError) {
+          console.error(`${TAG} Admin email send FAILED for ${bookingId}:`, adminEmailError);
+        }
+      } else {
+        console.warn(`${TAG} ADMIN_EMAIL not configured — admin notification skipped for ${bookingId}`);
       }
     } else {
-      console.warn(`${TAG} RESEND_API_KEY not configured — email NOT sent for ${bookingId}`);
+      console.warn(`${TAG} RESEND_API_KEY not configured — emails NOT sent for ${bookingId}`);
     }
 
     console.log(`${TAG} ✓ Booking ${bookingId} completed successfully`);
