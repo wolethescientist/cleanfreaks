@@ -11,9 +11,9 @@ type PaymentPageProps = {
 };
 
 const BANK_DETAILS = {
-  bankName: "Wema Bank",
-  accountName: "HENAM FACILITY MANAGEMENT LIMITED",
-  accountNumber: "0127406891",
+  bankName: "Access Bank",
+  accountName: "Henam Facility Management Limited",
+  accountNumber: "1883625366",
 };
 
 export default function PaymentPage({ booking }: PaymentPageProps) {
