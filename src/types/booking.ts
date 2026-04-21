@@ -9,6 +9,9 @@ export type Plan = {
   includes: string[];
   bestFor: string;
   maxSessions: number;
+  hasTwoCleanersOption?: boolean;
+  twoCleanersPrice?: number;
+  twoCleanersPriceFormatted?: string;
   maxWeekendDays?: number;
   weekendLimitPerMonth?: boolean;
   pricePerSession?: string;

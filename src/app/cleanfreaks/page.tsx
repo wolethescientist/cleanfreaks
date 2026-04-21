@@ -131,19 +131,6 @@ export default function CleanFreaksBooking() {
                 <Sparkles size={18} className="text-[#51A432] animate-pulse" />
                 CleanFreaks Service Plans
               </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                className="inline-flex items-center gap-3 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/70 px-5 py-2.5 rounded-full shadow-sm"
-              >
-                <Tag size={14} className="text-amber-500 shrink-0" />
-                <span className="text-xs md:text-sm font-bold text-amber-700 tracking-wide">
-                  Founders Launch Offer — valid till 15th April
-                </span>
-                <span className="hidden sm:block w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-              </motion.div>
             </div>
           </motion.section>
         )}

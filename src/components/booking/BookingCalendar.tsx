@@ -19,7 +19,7 @@ type BookingCalendarProps = {
 };
 
 const TIME_SLOTS = [
-  "09:00 AM", "12:00 PM", "03:00 PM"
+  "09:00 AM", "01:00 PM"
 ];
 
 function isWeekend(date: Date) {
@@ -242,7 +242,7 @@ export default function BookingCalendar({ selectedDates, selectedTime, plan, onS
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4">
             {TIME_SLOTS.map((t) => {
               const remaining = getSlotRemaining(t);
               const slotFull = dates.length > 0 && remaining <= 0;
