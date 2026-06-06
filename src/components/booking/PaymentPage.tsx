@@ -44,7 +44,7 @@ Address: ${booking.customer.address}
 
 Please find the receipt attached below.`;
 
-  const whatsappUrl = `https://wa.me/2348112220561?text=${encodeURIComponent(whatsappMessage)}`;
+  const whatsappUrl = `https://wa.me/2349053121695?text=${encodeURIComponent(whatsappMessage)}`;
 
   return (
     <div className="max-w-3xl mx-auto py-12 px-4">
