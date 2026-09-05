@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import { PLANS } from "@/constants/plans";
 import { Plan } from "@/types/booking";
-import { Check, ArrowRight } from "lucide-react";
+import { Check, ArrowRight, Users } from "lucide-react";
 import { motion } from "framer-motion";
 
 type PlanSelectionProps = {
@@ -12,27 +11,12 @@ type PlanSelectionProps = {
 };
 
 export default function PlanSelection({ selectedPlan, onSelect }: PlanSelectionProps) {
-  const [twoCleanersToggled, setTwoCleanersToggled] = useState<Record<string, boolean>>({});
-
-  const handleToggle = (planId: string) => {
-    setTwoCleanersToggled(prev => ({
-      ...prev,
-      [planId]: !prev[planId]
-    }));
-  };
-
+  // Every plan is a fixed 2-cleaner team, so the count is carried into the booking record.
   const handleSelect = (plan: Plan) => {
-    const isToggled = twoCleanersToggled[plan.id];
-    if (isToggled && plan.hasTwoCleanersOption && plan.twoCleanersPrice && plan.twoCleanersPriceFormatted) {
-      onSelect({
-        ...plan,
-        name: `${plan.name} (2 Cleaners)`,
-        price: plan.twoCleanersPrice,
-        priceFormatted: plan.twoCleanersPriceFormatted
-      });
-    } else {
-      onSelect(plan);
-    }
+    onSelect({
+      ...plan,
+      name: `${plan.name} (${plan.cleaners} Cleaners)`
+    });
   };
 
   return (
@@ -66,25 +50,15 @@ export default function PlanSelection({ selectedPlan, onSelect }: PlanSelectionP
             </h3>
             <div className="flex flex-col mb-4">
               <span className="text-4xl md:text-5xl font-black text-[#373A3C] tracking-tighter">
-                {twoCleanersToggled[plan.id] && plan.twoCleanersPriceFormatted ? plan.twoCleanersPriceFormatted : plan.priceFormatted}
+                {plan.priceFormatted}
               </span>
               <span className="text-gray-400 font-bold text-sm md:text-lg mt-1">{plan.period}</span>
             </div>
             
-            {plan.hasTwoCleanersOption && (
-              <div 
-                className="mb-4 flex items-center justify-between bg-brand-primary/5 p-3 rounded-xl border border-brand-primary/10 cursor-pointer hover:bg-brand-primary/10 transition-colors" 
-                onClick={() => handleToggle(plan.id)}
-              >
-                <span className="text-xs font-bold text-[#373A3C]">2 Cleaners instead?</span>
-                <button 
-                  type="button"
-                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${twoCleanersToggled[plan.id] ? 'bg-brand-primary' : 'bg-gray-300'}`}
-                >
-                  <span className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${twoCleanersToggled[plan.id] ? 'translate-x-4' : 'translate-x-0'}`} />
-                </button>
-              </div>
-            )}
+            <div className="mb-4 flex items-center gap-2 bg-brand-primary/5 p-3 rounded-xl border border-brand-primary/10">
+              <Users size={14} className="text-brand-primary shrink-0" strokeWidth={3} />
+              <span className="text-xs font-black text-[#373A3C] tracking-wide">{plan.cleaners} Cleaners included</span>
+            </div>
 
             <div className="bg-white/80 inline-block px-4 py-2 rounded-xl border border-brand-primary/10 shadow-sm">
               <p className="text-brand-primary font-black text-sm tracking-wide">{plan.sessions}</p>
@@ -103,6 +77,14 @@ export default function PlanSelection({ selectedPlan, onSelect }: PlanSelectionP
                   <Check size={12} strokeWidth={4} />
                 </div>
                 <span className="text-[#373A3C]/80 text-[13px] md:text-sm font-semibold leading-relaxed">{item}</span>
+              </div>
+            ))}
+            {plan.complimentary?.map((item, idx) => (
+              <div key={`complimentary-${idx}`} className="flex items-start gap-4">
+                <div className="mt-0.5 bg-brand-primary p-1 rounded-full text-white shrink-0 shadow-sm">
+                  <Check size={12} strokeWidth={4} />
+                </div>
+                <span className="text-[#373A3C] text-[13px] md:text-sm font-black leading-relaxed">{item}</span>
               </div>
             ))}
           </div>

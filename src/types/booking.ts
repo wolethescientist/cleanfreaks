@@ -6,12 +6,11 @@ export type Plan = {
   period: string;
   sessions: string;
   visits: string;
+  cleaners: number;
   includes: string[];
+  complimentary?: string[];
   bestFor: string;
   maxSessions: number;
-  hasTwoCleanersOption?: boolean;
-  twoCleanersPrice?: number;
-  twoCleanersPriceFormatted?: string;
   maxWeekendDays?: number;
   weekendLimitPerMonth?: boolean;
   pricePerSession?: string;
