@@ -12,19 +12,6 @@ const STANDARD_INCLUDES = [
 
 export const PLANS: Plan[] = [
   {
-    id: 'one-off',
-    name: "One-Off Cleaning",
-    price: 45000,
-    priceFormatted: "₦45,000",
-    period: "per session",
-    sessions: "1 cleaning session (4 Hours)",
-    visits: "Strict 4-hour service window",
-    cleaners: CLEANERS_PER_SESSION,
-    includes: STANDARD_INCLUDES,
-    bestFor: "Perfect for first-time clients or occasional cleaning needs. Note: Excludes construction dirt, post-renovation cleaning, or heavily soiled environments.",
-    maxSessions: 1
-  },
-  {
     id: 'monthly',
     name: "Monthly Home Care Plan",
     price: 100000,
@@ -39,6 +26,19 @@ export const PLANS: Plan[] = [
     maxWeekendDays: 2,
     weekendLimitPerMonth: false,
     popular: true
+  },
+  {
+    id: 'one-off',
+    name: "One-Off Cleaning",
+    price: 45000,
+    priceFormatted: "₦45,000",
+    period: "per session",
+    sessions: "1 cleaning session (4 Hours)",
+    visits: "Strict 4-hour service window",
+    cleaners: CLEANERS_PER_SESSION,
+    includes: STANDARD_INCLUDES,
+    bestFor: "Perfect for first-time clients or occasional cleaning needs. Note: Excludes construction dirt, post-renovation cleaning, or heavily soiled environments.",
+    maxSessions: 1
   },
   {
     id: 'quarterly',

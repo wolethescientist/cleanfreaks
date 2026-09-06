@@ -20,7 +20,7 @@ export default function PlanSelection({ selectedPlan, onSelect }: PlanSelectionP
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto py-6 sm:py-10 md:py-12 px-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-6 max-w-7xl mx-auto py-6 sm:py-10 md:py-12 px-4">
       {PLANS.map((plan, index) => (
         <motion.div
           key={plan.id}
@@ -29,7 +29,9 @@ export default function PlanSelection({ selectedPlan, onSelect }: PlanSelectionP
           transition={{ delay: index * 0.2 }}
           className={`relative p-6 sm:p-8 md:p-10 rounded-[2rem] md:rounded-[2.5rem] transition-all duration-500 flex flex-col ${selectedPlan?.id === plan.id
             ? "bg-[#E7F5E4]/80 shadow-[0_12px_40px_rgba(81,164,50,0.15)] md:scale-105 z-10 border border-[#51A432]/20"
-            : "bg-white border hover:border-transparent border-transparent shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_35px_rgba(0,0,0,0.08)] md:hover:-translate-y-2"
+            : plan.popular
+              ? "bg-white border-2 border-brand-primary/40 shadow-[0_12px_40px_rgba(81,164,50,0.18)] md:scale-105 z-10 hover:shadow-[0_16px_45px_rgba(81,164,50,0.28)] md:hover:-translate-y-2"
+              : "bg-white border hover:border-transparent border-transparent shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_35px_rgba(0,0,0,0.08)] md:hover:-translate-y-2"
             }`}
         >
           {selectedPlan?.id === plan.id && (

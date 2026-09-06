@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar as CalendarIcon, Clock, ChevronRight, CheckCircle2 } from "lucide-react";
-import { format } from "date-fns";
+import { format, startOfDay } from "date-fns";
 import { Plan } from "@/types/booking";
 import type { AvailabilityData } from "@/app/api/availability/route";
 
@@ -40,7 +40,9 @@ export default function BookingCalendar({ selectedDates, selectedTime, plan, onS
   const [time, setTime] = useState<string | null>(selectedTime);
   const [weekendWarning, setWeekendWarning] = useState(false);
   const [availability, setAvailability] = useState<AvailabilityData | null>(null);
-  const aprilStart = new Date(2026, 3, 1); // April 1, 2026
+  // Bookings run from today onward. Computed per mount so the calendar always
+  // tracks the real calendar instead of drifting into a stale month.
+  const today = useMemo(() => startOfDay(new Date()), []);
 
   useEffect(() => {
     fetch('/api/availability')
@@ -106,7 +108,7 @@ export default function BookingCalendar({ selectedDates, selectedTime, plan, onS
   };
 
   const isDisabled = (date: Date) => {
-    if (date < aprilStart) return true;
+    if (date < today) return true;
     // Disable fully booked dates
     if (availability) {
       const dateStr = format(date, 'MMMM d, yyyy');
@@ -214,7 +216,8 @@ export default function BookingCalendar({ selectedDates, selectedTime, plan, onS
               selected={dates}
               onSelect={handleDaySelect}
               disabled={isDisabled}
-              defaultMonth={aprilStart}
+              defaultMonth={today}
+              startMonth={today}
               modifiersStyles={{
                 selected: { backgroundColor: '#51A432', color: 'white', borderRadius: '14px', fontWeight: 'bold' },
                 today: { color: '#00774D', fontWeight: '900', borderBottom: '3px solid #E7F5E4' }
