@@ -2,24 +2,25 @@
 
 import { PLANS } from "@/constants/plans";
 import { Plan } from "@/types/booking";
+import { buildBookingPlan } from "@/lib/booking";
 import { Check, ArrowRight, Users } from "lucide-react";
 import { motion } from "framer-motion";
+import RugWashingCard from "./RugWashingCard";
 
 type PlanSelectionProps = {
   selectedPlan: Plan | null;
-  onSelect: (plan: Plan) => void;
+  selectedQuantity: number;
+  onSelect: (plan: Plan, quantity?: number) => void;
 };
 
-export default function PlanSelection({ selectedPlan, onSelect }: PlanSelectionProps) {
+export default function PlanSelection({ selectedPlan, selectedQuantity, onSelect }: PlanSelectionProps) {
   // Every plan is a fixed 2-cleaner team, so the count is carried into the booking record.
   const handleSelect = (plan: Plan) => {
-    onSelect({
-      ...plan,
-      name: `${plan.name} (${plan.cleaners} Cleaners)`
-    });
+    onSelect(buildBookingPlan(plan));
   };
 
   return (
+    <>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-6 max-w-7xl mx-auto py-6 sm:py-10 md:py-12 px-4">
       {PLANS.map((plan, index) => (
         <motion.div
@@ -106,5 +107,11 @@ export default function PlanSelection({ selectedPlan, onSelect }: PlanSelectionP
         </motion.div>
       ))}
     </div>
+
+    <div className="px-4 pb-8">
+      <p className="text-center text-xs font-black text-gray-400 uppercase tracking-[0.3em] mb-6">Also Available</p>
+      <RugWashingCard selectedPlan={selectedPlan} initialQuantity={selectedQuantity} onSelect={onSelect} />
+    </div>
+    </>
   );
 }

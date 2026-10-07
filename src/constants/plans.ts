@@ -78,3 +78,26 @@ export const PLANS: Plan[] = [
     weekendLimitPerMonth: true
   }
 ];
+
+// Per-unit product: the customer picks how many rugs, we pick them up on the chosen date and time.
+// `price` is per rug; the total is price × quantity (see resolveBooking in lib/booking.ts).
+export const RUG_WASHING: Plan = {
+  id: 'rug-washing',
+  name: "Rug Washing",
+  price: 20000,
+  priceFormatted: "₦20,000",
+  period: "per rug",
+  sessions: "Pickup on the date you choose",
+  visits: "Choose your pickup date and time",
+  cleaners: 0,
+  includes: [
+    "Professional deep wash for every rug",
+    "We come to your address to pick up your rugs on your chosen date and time"
+  ],
+  bestFor: "Rugs and carpets that need a proper wash without the stress of hauling them out yourself.",
+  maxSessions: 1,
+  unit: "rug",
+  maxQuantity: 20
+};
+
+export const ALL_PRODUCTS: Plan[] = [...PLANS, RUG_WASHING];

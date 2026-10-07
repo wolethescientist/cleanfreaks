@@ -29,14 +29,16 @@ export default function PaymentPage({ booking }: PaymentPageProps) {
     ? booking.dates.map(date => format(date, "MMMM d, yyyy")).join(", ")
     : "None selected";
 
+  const isPickup = !!booking.plan?.unit;
+
   const whatsappMessage = `Hello Clean Freaks, 
 
 I have just made a payment for my booking.
 
 Booking ID: ${booking.bookingId}
-Plan: ${booking.plan?.name}
+${isPickup ? "Service" : "Plan"}: ${booking.plan?.name}
 Amount: ${booking.plan?.priceFormatted}
-First Month Dates Selected: ${formattedDates}
+${isPickup ? "Pickup Date" : "First Month Dates Selected"}: ${formattedDates}
 Time: ${booking.timeSlot}
 Customer: ${booking.customer.name}
 Phone: ${booking.customer.phone}
@@ -79,7 +81,11 @@ Please find the receipt attached below.`;
                 <div className="space-y-2 border-t pt-4">
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <Calendar size={14} className="text-brand-secondary min-w-[14px]" />
-                    <span>{booking.dates?.length || 0} Session{(booking.dates?.length || 0) !== 1 ? 's' : ''} Selected</span>
+                    <span>
+                      {isPickup
+                        ? `Pickup on ${formattedDates}`
+                        : `${booking.dates?.length || 0} Session${(booking.dates?.length || 0) !== 1 ? 's' : ''} Selected`}
+                    </span>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <CreditCard size={14} className="text-brand-secondary min-w-[14px]" />

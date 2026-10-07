@@ -1,22 +1,47 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
-import { google } from 'googleapis';
 import { format } from 'date-fns';
-import { fetchAvailabilityData, invalidateAvailabilityCache, MAX_PER_SLOT } from '@/app/api/availability/route';
-
-const resend = new Resend(process.env.RESEND_API_KEY || '');
+import {
+  fetchAvailabilityData,
+  getSheetsClient,
+  hasSheetsCredentials,
+  invalidateAvailabilityCache,
+  withBookingLock,
+} from '@/lib/availability';
+import { isPerUnitPlan, validateBooking } from '@/lib/booking';
+import { MAX_PER_SLOT } from '@/constants/schedule';
 
 const TAG = '[BOOKING]';
+
+// The sheet uses USER_ENTERED, so a value starting with = + - @ would be evaluated as a formula.
+// A leading apostrophe forces Sheets to treat it as plain text (and is not displayed).
+const asText = (v: string) => (/^[=+\-@]/.test(v) ? `'${v}` : v);
+
+class SlotFullError extends Error {
+  constructor(public readonly dateLabel: string) {
+    super('SLOT_FULL');
+  }
+}
 
 export async function POST(req: NextRequest) {
   const requestTime = new Date().toISOString();
   console.log(`${TAG} ---- New booking request at ${requestTime} ----`);
 
   try {
-    const data = await req.json();
-    const { plan, dates, timeSlot, customer } = data;
+    const validation = validateBooking(await req.json());
+    if (!validation.ok) {
+      console.warn(`${TAG} Rejected invalid booking: ${validation.message}`);
+      return NextResponse.json({
+        success: false,
+        error: 'INVALID_BOOKING',
+        message: validation.message,
+      }, { status: 400 });
+    }
 
-    console.log(`${TAG} Customer: ${customer?.name} | Email: ${customer?.email} | Plan: ${plan?.name} | Time: ${timeSlot} | Dates: ${dates?.length}`);
+    // Plan name, price and dates below are server-validated — never the raw client payload.
+    const { plan, timeSlot, customer, dateLabels } = validation.booking;
+
+    console.log(`${TAG} Customer: ${customer.name} | Email: ${customer.email} | Plan: ${plan.name} (${plan.priceFormatted}) | Time: ${timeSlot} | Dates: ${dateLabels.length}`);
 
     // 1. Generate booking ID
     const today = new Date();
@@ -25,86 +50,75 @@ export async function POST(req: NextRequest) {
     const bookingId = `CF-${dateStr}-${randomStr}`;
     console.log(`${TAG} Generated booking ID: ${bookingId}`);
 
-    const formattedDates = dates && dates.length > 0
-      ? dates.map((d: string | Date) => format(new Date(d), 'MMMM d, yyyy')).join(', ')
-      : 'N/A';
+    const formattedDates = dateLabels.join(', ');
 
-    const parsedDateStrings: string[] = dates
-      ? dates.map((d: string | Date) => format(new Date(d), 'MMMM d, yyyy'))
-      : [];
+    // 2 + 3. Check capacity and save to Google Sheets. Done inside a lock so two simultaneous
+    // requests can't both pass the check for the last free spot.
+    try {
+      await withBookingLock(async () => {
+        // Rug pickups don't use a cleaning team, so they skip the cleaning-capacity check.
+        if (!isPerUnitPlan(plan)) {
+          console.log(`${TAG} Running availability double-check for ${dateLabels.length} date(s) at ${timeSlot}...`);
+          const availability = await fetchAvailabilityData(true);
 
-    // 2. Double-check availability (fresh Sheets read, bypass cache)
-    if (parsedDateStrings.length > 0 && timeSlot) {
-      console.log(`${TAG} Running availability double-check for ${parsedDateStrings.length} date(s) at ${timeSlot}...`);
-      const availability = await fetchAvailabilityData(true);
+          for (const ds of dateLabels) {
+            const count = availability.slotCounts[ds]?.[timeSlot] || 0;
+            console.log(`${TAG}   ${ds} @ ${timeSlot}: ${count}/${MAX_PER_SLOT} booked`);
+            if (count >= MAX_PER_SLOT) throw new SlotFullError(ds);
+          }
+          console.log(`${TAG} Availability check passed — all slots have capacity`);
+        }
 
-      for (const ds of parsedDateStrings) {
-        const count = availability.slotCounts[ds]?.[timeSlot] || 0;
-        console.log(`${TAG}   ${ds} @ ${timeSlot}: ${count}/${MAX_PER_SLOT} booked`);
-      }
-
-      const overbooked = parsedDateStrings.find(ds => {
-        const count = availability.slotCounts[ds]?.[timeSlot] || 0;
-        return count >= MAX_PER_SLOT;
+        if (hasSheetsCredentials()) {
+          console.log(`${TAG} Saving to Google Sheets...`);
+          try {
+            const sheets = getSheetsClient();
+            await sheets.spreadsheets.values.append({
+              spreadsheetId: process.env.GOOGLE_SHEET_ID!,
+              range: 'Sheet1!A:K',
+              valueInputOption: 'USER_ENTERED',
+              requestBody: {
+                values: [[
+                  bookingId,
+                  asText(customer.name),
+                  asText(customer.email),
+                  asText(customer.phone),
+                  asText(customer.address),
+                  plan.name,
+                  plan.priceFormatted,
+                  formattedDates,
+                  timeSlot,
+                  new Date().toISOString(),
+                  'Not Paid',
+                ]],
+              },
+            });
+            console.log(`${TAG} Saved to Sheets successfully — invalidating availability cache`);
+            invalidateAvailabilityCache();
+          } catch (sheetError) {
+            console.error(`${TAG} Google Sheets write FAILED for ${bookingId}:`, sheetError);
+            // Continue — customer still gets a confirmation, but flag clearly for manual fix
+          }
+        } else {
+          console.warn(`${TAG} Google Sheets credentials not configured — ${bookingId} NOT saved to Sheets`);
+        }
       });
-
-      if (overbooked) {
-        console.warn(`${TAG} SLOT_FULL — ${overbooked} @ ${timeSlot} is at capacity. Rejecting ${bookingId}`);
+    } catch (err) {
+      if (err instanceof SlotFullError) {
+        console.warn(`${TAG} SLOT_FULL — ${err.dateLabel} @ ${timeSlot} is at capacity. Rejecting ${bookingId}`);
         return NextResponse.json({
           success: false,
           error: 'SLOT_FULL',
-          message: `Sorry, the ${timeSlot} slot on ${overbooked} is now fully booked. Please go back and choose a different time or date.`,
+          message: `Sorry, the ${timeSlot} slot on ${err.dateLabel} is now fully booked. Please go back and choose a different time or date.`,
         }, { status: 409 });
       }
-
-      console.log(`${TAG} Availability check passed — all slots have capacity`);
-    } else {
-      console.log(`${TAG} Skipping availability check (no dates or no timeSlot)`);
-    }
-
-    // 3. Save to Google Sheets
-    if (process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL && process.env.GOOGLE_PRIVATE_KEY && process.env.GOOGLE_SHEET_ID) {
-      console.log(`${TAG} Saving to Google Sheets...`);
-      try {
-        const auth = new google.auth.JWT({
-          email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-          key: process.env.GOOGLE_PRIVATE_KEY.split(String.raw`\n`).join('\n'),
-          scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-        });
-
-        const sheets = google.sheets({ version: 'v4', auth });
-        await sheets.spreadsheets.values.append({
-          spreadsheetId: process.env.GOOGLE_SHEET_ID,
-          range: 'Sheet1!A:K',
-          valueInputOption: 'USER_ENTERED',
-          requestBody: {
-            values: [[
-              bookingId,
-              customer.name,
-              customer.email,
-              customer.phone,
-              customer.address,
-              plan.name,
-              plan.priceFormatted,
-              formattedDates,
-              timeSlot,
-              new Date().toISOString(),
-              'Not Paid',
-            ]],
-          },
-        });
-        console.log(`${TAG} Saved to Sheets successfully — invalidating availability cache`);
-        invalidateAvailabilityCache();
-      } catch (sheetError) {
-        console.error(`${TAG} Google Sheets write FAILED for ${bookingId}:`, sheetError);
-        // Continue — customer still gets a confirmation, but flag clearly for manual fix
-      }
-    } else {
-      console.warn(`${TAG} Google Sheets credentials not configured — ${bookingId} NOT saved to Sheets`);
+      throw err;
     }
 
     // 4. Send confirmation email to customer + admin
     if (process.env.RESEND_API_KEY) {
+      // Created lazily: the Resend constructor throws when no API key is set (e.g. at build time).
+      const resend = new Resend(process.env.RESEND_API_KEY);
       const senderEmail = process.env.SENDER_EMAIL || 'noreply@henamfacility.com.ng';
 
       // Customer confirmation

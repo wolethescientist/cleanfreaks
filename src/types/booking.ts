@@ -14,10 +14,15 @@ export type Plan = {
   maxWeekendDays?: number;
   weekendLimitPerMonth?: boolean;
   popular?: boolean;
+  // Per-unit products (e.g. rug washing): `price` is the price of one unit.
+  unit?: string;
+  maxQuantity?: number;
 };
 
 export type BookingData = {
   plan: Plan | null;
+  // Number of units for per-unit products. Always 1 for cleaning plans.
+  quantity: number;
   dates: Date[];
   timeSlot: string | null;
   customer: {

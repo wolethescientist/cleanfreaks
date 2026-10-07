@@ -7,9 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Calendar as CalendarIcon, Clock, ChevronRight, CheckCircle2 } from "lucide-react";
 import { format, startOfDay } from "date-fns";
 import { Plan } from "@/types/booking";
-import type { AvailabilityData } from "@/app/api/availability/route";
-
-const MAX_PER_SLOT = 10;
+import type { AvailabilityData } from "@/lib/availability";
+import { MAX_PER_SLOT, SHEET_DATE_FORMAT, TIME_SLOTS } from "@/constants/schedule";
 
 type BookingCalendarProps = {
   selectedDates: Date[];
@@ -17,10 +16,6 @@ type BookingCalendarProps = {
   plan: Plan | null;
   onSelect: (dates: Date[], time: string) => void;
 };
-
-const TIME_SLOTS = [
-  "09:00 AM", "01:00 PM"
-];
 
 function isWeekend(date: Date) {
   const day = date.getDay();
@@ -39,7 +34,7 @@ export default function BookingCalendar({ selectedDates, selectedTime, plan, onS
   const [dates, setDates] = useState<Date[]>(selectedDates || []);
   const [time, setTime] = useState<string | null>(selectedTime);
   const [weekendWarning, setWeekendWarning] = useState(false);
-  const [availability, setAvailability] = useState<AvailabilityData | null>(null);
+  const [availabilityData, setAvailabilityData] = useState<AvailabilityData | null>(null);
   // Bookings run from today onward. Computed per mount so the calendar always
   // tracks the real calendar instead of drifting into a stale month.
   const today = useMemo(() => startOfDay(new Date()), []);
@@ -48,11 +43,14 @@ export default function BookingCalendar({ selectedDates, selectedTime, plan, onS
     fetch('/api/availability')
       .then(r => r.json())
       .then((data: AvailabilityData & { success: boolean }) => {
-        if (data.success) setAvailability(data);
+        if (data.success) setAvailabilityData(data);
       })
       .catch(() => {}); // fail silently — calendar still works, just no capacity data
   }, []);
 
+  const isPickup = !!plan?.unit;
+  // Rug pickups don't use a cleaning team, so cleaning capacity doesn't apply to them.
+  const availability = isPickup ? null : availabilityData;
   const maxDates = plan?.maxSessions || 12;
   const maxWeekendDays = plan?.maxWeekendDays ?? null;
   const perMonth = plan?.weekendLimitPerMonth ?? false;
@@ -61,7 +59,7 @@ export default function BookingCalendar({ selectedDates, selectedTime, plan, onS
   const getSlotRemaining = (slot: string): number => {
     if (!availability || dates.length === 0) return MAX_PER_SLOT;
     return dates.reduce((min, date) => {
-      const dateStr = format(date, 'MMMM d, yyyy');
+      const dateStr = format(date, SHEET_DATE_FORMAT);
       const count = availability.slotCounts[dateStr]?.[slot] ?? 0;
       return Math.min(min, MAX_PER_SLOT - count);
     }, MAX_PER_SLOT);
@@ -111,7 +109,7 @@ export default function BookingCalendar({ selectedDates, selectedTime, plan, onS
     if (date < today) return true;
     // Disable fully booked dates
     if (availability) {
-      const dateStr = format(date, 'MMMM d, yyyy');
+      const dateStr = format(date, SHEET_DATE_FORMAT);
       if (availability.fullDates.includes(dateStr)) return true;
     }
     // Disable weekend days that would exceed the per-plan limit
@@ -135,11 +133,13 @@ export default function BookingCalendar({ selectedDates, selectedTime, plan, onS
               <CalendarIcon size={20} />
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="text-base md:text-xl font-bold text-gray-900">Select Dates</h3>
+              <h3 className="text-base md:text-xl font-bold text-gray-900">{isPickup ? "Select Pickup Date" : "Select Dates"}</h3>
               <p className="text-sm text-gray-500 font-medium italic">
-                {dates.length === maxDates
-                  ? "All sessions selected — you're good to go!"
-                  : `${maxDates - dates.length} session${maxDates - dates.length !== 1 ? 's' : ''} remaining`}
+                {isPickup
+                  ? (dates.length === maxDates ? "Pickup date selected — you're good to go!" : "Choose the day we should come for your rugs")
+                  : dates.length === maxDates
+                    ? "All sessions selected — you're good to go!"
+                    : `${maxDates - dates.length} session${maxDates - dates.length !== 1 ? 's' : ''} remaining`}
               </p>
             </div>
             <div className={`shrink-0 text-right ${dates.length === maxDates ? 'text-[#51A432]' : 'text-gray-400'}`}>
@@ -171,7 +171,7 @@ export default function BookingCalendar({ selectedDates, selectedTime, plan, onS
               >
                 <CheckCircle2 size={16} className="text-[#51A432] shrink-0" />
                 <p className="text-xs font-bold text-[#00774D]">
-                  All {maxDates} sessions selected! Now pick a time slot to continue.
+                  {isPickup ? "Pickup date selected! Now pick a time to continue." : `All ${maxDates} sessions selected! Now pick a time slot to continue.`}
                 </p>
               </motion.div>
             )}
@@ -241,7 +241,7 @@ export default function BookingCalendar({ selectedDates, selectedTime, plan, onS
               <Clock size={20} />
             </div>
             <div>
-              <h3 className="text-lg md:text-2xl font-black text-gray-900 tracking-tight">Select Time Slot</h3>
+              <h3 className="text-lg md:text-2xl font-black text-gray-900 tracking-tight">{isPickup ? "Select Pickup Time" : "Select Time Slot"}</h3>
             </div>
           </div>
 
@@ -280,7 +280,7 @@ export default function BookingCalendar({ selectedDates, selectedTime, plan, onS
 
           {dates.length === 0 && (
             <p className="text-sm text-gray-500 mt-4 italic text-center animate-pulse">
-              Please select at least one date first to view available times
+              {isPickup ? "Please select a pickup date first to view available times" : "Please select at least one date first to view available times"}
             </p>
           )}
 
@@ -294,7 +294,9 @@ export default function BookingCalendar({ selectedDates, selectedTime, plan, onS
                 <div>
                   <p className="text-[11px] font-black text-[#00774D] uppercase tracking-[0.2em] mb-1">Schedule Summary:</p>
                   <p className="text-sm font-black text-gray-800 tracking-tight">
-                    {dates.length} Session{dates.length !== 1 ? 's' : ''} Selected <span className="text-[#51A432] px-1">•</span> {time}
+                    {isPickup
+                      ? <>Pickup on {format(dates[0], "EEE, MMM d")}</>
+                      : <>{dates.length} Session{dates.length !== 1 ? 's' : ''} Selected</>} <span className="text-[#51A432] px-1">•</span> {time}
                   </p>
                   {maxWeekendDays !== null && (
                     <p className="text-[11px] text-gray-500 mt-1">

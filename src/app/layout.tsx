@@ -9,7 +9,7 @@ const quicksand = Quicksand({
 
 export const metadata: Metadata = {
   title: "Clean Freaks - Professional Cleaning Services",
-  description: "Book your quarterly cleaning sessions with Clean Freaks. Quality assurance, dedicated support, and reliable service.",
+  description: "Book home cleaning plans and rug washing with Clean Freaks. Quality assurance, dedicated support, and reliable service.",
 };
 
 export default function RootLayout({

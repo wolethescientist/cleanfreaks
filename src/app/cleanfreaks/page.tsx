@@ -9,6 +9,8 @@ import BookingCalendar from "@/components/booking/BookingCalendar";
 import BookingForm from "@/components/booking/BookingForm";
 import PaymentPage from "@/components/booking/PaymentPage";
 import { motion, AnimatePresence } from "framer-motion";
+import { format } from "date-fns";
+import { WIRE_DATE_FORMAT } from "@/lib/booking";
 import { Sparkles, ArrowLeft, Phone, Instagram, Facebook, Twitter, Tag } from "lucide-react";
 
 const STEPS = ["Proceed", "Schedule", "Details", "Payment"];
@@ -22,14 +24,22 @@ export default function CleanFreaksBooking() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookingData, setBookingData] = useState<BookingData>({
     plan: null,
+    quantity: 1,
     dates: [],
     timeSlot: null,
     customer: { name: "", email: "", phone: "", address: "" },
     bookingId: null,
   });
 
-  const handlePlanSelect = (plan: Plan) => {
-    setBookingData({ ...bookingData, plan });
+  const handlePlanSelect = (plan: Plan, quantity = 1) => {
+    // Switching product invalidates any dates picked for the previous one (different session limits).
+    const changedProduct = bookingData.plan?.id !== plan.id;
+    setBookingData({
+      ...bookingData,
+      plan,
+      quantity,
+      ...(changedProduct ? { dates: [], timeSlot: null } : {}),
+    });
     setStep(1);
   };
 
@@ -42,12 +52,13 @@ export default function CleanFreaksBooking() {
     setIsSubmitting(true);
 
     try {
-      // Mock API call
       const response = await fetch('/api/book', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...bookingData,
+          // Send plain calendar days so the server doesn't depend on the browser's timezone.
+          dates: bookingData.dates.map((d) => format(d, WIRE_DATE_FORMAT)),
           customer,
         }),
       });
@@ -65,7 +76,7 @@ export default function CleanFreaksBooking() {
         alert(result.message);
         setStep(1); // Send them back to reschedule
       } else {
-        alert("Something went wrong. Please try again.");
+        alert(result.message || "Something went wrong. Please try again.");
       }
     } catch (error) {
       console.error("Booking error:", error);
@@ -163,6 +174,7 @@ export default function CleanFreaksBooking() {
               >
                 <PlanSelection
                   selectedPlan={bookingData.plan}
+                  selectedQuantity={bookingData.quantity}
                   onSelect={handlePlanSelect}
                 />
               </motion.div>
