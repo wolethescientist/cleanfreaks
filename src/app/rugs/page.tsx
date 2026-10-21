@@ -160,29 +160,7 @@ export default function RugsPage() {
             exit={{ opacity: 0, y: -20 }}
             className="max-w-4xl mx-auto text-center pt-2 pb-6 px-4"
           >
-            {/* Prominent Price Callout - The First Thing Users See */}
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.1 }}
-              className="inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-4 bg-white/95 border-2 border-[#51A432]/40 px-5 sm:px-8 py-2.5 sm:py-3 rounded-2xl sm:rounded-full shadow-lg shadow-[#51A432]/10 mb-4"
-            >
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 tracking-tight">
-                  ₦15,000
-                </span>
-                <span className="text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-wider">
-                  / per rug
-                </span>
-              </div>
-              <div className="hidden sm:block h-7 w-px bg-gray-200" />
-              <div className="flex items-center gap-2 text-xs font-bold text-[#00774D]">
-                <span className="bg-[#E7F5E4] px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase">
-                  Flat Rate
-                </span>
-                <span>All Sizes • Free Doorstep Pickup</span>
-              </div>
-            </motion.div>
+
 
             <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-[#373A3C] tracking-tight leading-[1.1] mb-3">
               Restore Your Rugs to <br />
