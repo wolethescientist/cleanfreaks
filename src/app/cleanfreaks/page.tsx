@@ -143,10 +143,10 @@ export default function CleanFreaksBookingPage() {
               </span>
             </div>
 
-            {/* Direct Link to Rug Cleaning under /cleanfreaks */}
+            {/* Direct Link to Rug Cleaning */}
             <div className="flex flex-col items-center gap-2">
               <Link
-                href="/cleanfreaks/rugs"
+                href="/rugs"
                 className="inline-flex items-center gap-2 bg-[#E7F5E4] hover:bg-[#d8eed4] text-[#00774D] px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-wider border border-[#51A432]/30 shadow-sm transition-all hover:scale-105"
               >
                 <Sparkles size={15} className="text-[#51A432] animate-pulse" />
