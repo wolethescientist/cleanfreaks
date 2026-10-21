@@ -5,7 +5,7 @@ import { Plan } from "@/types/booking";
 import { buildBookingPlan } from "@/lib/booking";
 import { Check, ArrowRight, Users } from "lucide-react";
 import { motion } from "framer-motion";
-import RugWashingCard from "./RugWashingCard";
+import Link from "next/link";
 
 type PlanSelectionProps = {
   selectedPlan: Plan | null;
@@ -108,9 +108,27 @@ export default function PlanSelection({ selectedPlan, selectedQuantity, onSelect
       ))}
     </div>
 
-    <div className="px-4 pb-8">
-      <p className="text-center text-xs font-black text-gray-400 uppercase tracking-[0.3em] mb-6">Also Available</p>
-      <RugWashingCard selectedPlan={selectedPlan} initialQuantity={selectedQuantity} onSelect={onSelect} />
+    <div className="max-w-4xl mx-auto px-4 pb-12 pt-4">
+      <div className="p-6 sm:p-8 rounded-[2rem] bg-gradient-to-r from-[#E7F5E4] to-white border border-[#51A432]/20 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm">
+        <div className="text-center sm:text-left">
+          <span className="text-[10px] font-black uppercase tracking-widest text-[#00774D] bg-white px-3 py-1 rounded-full border border-[#51A432]/20">
+            Dedicated Service
+          </span>
+          <h4 className="text-lg sm:text-xl font-black text-[#373A3C] tracking-tight mt-2">
+            Looking for Professional Rug Cleaning?
+          </h4>
+          <p className="text-xs sm:text-sm text-gray-600 font-medium mt-1">
+            Flat ₦15,000 per rug • Choose Doorstep Pickup or On-Site Steam Cleaning
+          </p>
+        </div>
+        <Link
+          href="/cleanfreaks/rug-cleaning"
+          className="whitespace-nowrap px-6 py-4 rounded-2xl bg-[#51A432] text-white font-black text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-[#00774D] hover:-translate-y-0.5 transition-all shadow-md shadow-[#51A432]/20"
+        >
+          Book Rug Cleaning
+          <ArrowRight size={16} />
+        </Link>
+      </div>
     </div>
     </>
   );

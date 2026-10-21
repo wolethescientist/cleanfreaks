@@ -7,9 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Calendar as CalendarIcon, Clock, ChevronRight, Truck, Home, CheckCircle2 } from "lucide-react";
 import { format, startOfDay } from "date-fns";
 import { RugServiceType } from "@/types/booking";
-import type { AvailabilityData } from "@/app/api/availability/route";
-
-const MAX_PER_SLOT = 10;
+import type { AvailabilityData } from "@/lib/availability";
+import { MAX_PER_SLOT } from "@/constants/schedule";
 
 type RugBookingCalendarProps = {
   selectedDate: Date | null;
