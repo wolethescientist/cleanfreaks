@@ -33,3 +33,23 @@ export type BookingData = {
   };
   bookingId: string | null;
 };
+
+export type RugServiceType = 'on-site' | 'pickup';
+
+export type RugBookingData = {
+  rugCount: number;
+  serviceType: RugServiceType;
+  pricePerRug: number;
+  totalPrice: number;
+  totalPriceFormatted: string;
+  date: Date | null;
+  timeSlot: string | null;
+  customer: {
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+    notes?: string;
+  };
+  bookingId: string | null;
+};

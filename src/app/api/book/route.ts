@@ -9,7 +9,7 @@ import {
   withBookingLock,
 } from '@/lib/availability';
 import { isPerUnitPlan, validateBooking } from '@/lib/booking';
-import { MAX_PER_SLOT } from '@/constants/schedule';
+import { MAX_PER_SLOT, SHEET_DATE_FORMAT } from '@/constants/schedule';
 
 const TAG = '[BOOKING]';
 
@@ -28,36 +28,90 @@ export async function POST(req: NextRequest) {
   console.log(`${TAG} ---- New booking request at ${requestTime} ----`);
 
   try {
-    const validation = validateBooking(await req.json());
-    if (!validation.ok) {
-      console.warn(`${TAG} Rejected invalid booking: ${validation.message}`);
-      return NextResponse.json({
-        success: false,
-        error: 'INVALID_BOOKING',
-        message: validation.message,
-      }, { status: 400 });
-    }
+    const rawBody = await req.json();
+    const isDedicatedRugBooking = rawBody.bookingType === 'rugs';
 
-    // Plan name, price and dates below are server-validated — never the raw client payload.
-    const { plan, timeSlot, customer, dateLabels } = validation.booking;
+    let bookingId: string;
+    let planName: string;
+    let priceFormatted: string;
+    let timeSlot: string;
+    let formattedDates: string;
+    let dateLabels: string[] = [];
+    let customer: { name: string; email: string; phone: string; address: string; notes?: string };
+    let skipCapacityCheck = false;
 
-    console.log(`${TAG} Customer: ${customer.name} | Email: ${customer.email} | Plan: ${plan.name} (${plan.priceFormatted}) | Time: ${timeSlot} | Dates: ${dateLabels.length}`);
-
-    // 1. Generate booking ID
     const today = new Date();
     const dateStr = format(today, 'yyyyMMdd');
     const randomStr = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-    const bookingId = `CF-${dateStr}-${randomStr}`;
+
+    if (isDedicatedRugBooking) {
+      const rugCount = Math.max(1, Number(rawBody.rugCount) || 1);
+      const totalAmount = rugCount * 15000;
+      priceFormatted = rawBody.totalPriceFormatted || `₦${totalAmount.toLocaleString()}`;
+      const serviceLabel = rawBody.serviceType === 'pickup' ? 'Pickup & Delivery' : 'On-Site Cleaning';
+      planName = `Rug Cleaning (${rugCount} ${rugCount === 1 ? 'Rug' : 'Rugs'} — ${serviceLabel})`;
+      timeSlot = rawBody.timeSlot || '09:00 AM';
+      bookingId = `CFR-${dateStr}-${randomStr}`;
+
+      const rawDate = rawBody.date ? new Date(rawBody.date) : null;
+      if (rawDate && !isNaN(rawDate.getTime())) {
+        const label = format(rawDate, SHEET_DATE_FORMAT);
+        dateLabels = [label];
+        formattedDates = label;
+      } else {
+        formattedDates = 'N/A';
+      }
+
+      const c = rawBody.customer || {};
+      customer = {
+        name: String(c.name || '').trim().slice(0, 120),
+        email: String(c.email || '').trim().slice(0, 200),
+        phone: String(c.phone || '').trim().slice(0, 40),
+        address: String(c.address || '').trim().slice(0, 300),
+        notes: rawBody.notes ? String(rawBody.notes).trim().slice(0, 500) : undefined,
+      };
+
+      if (!customer.name || !customer.phone || !customer.address || !/\S+@\S+\.\S+/.test(customer.email)) {
+        return NextResponse.json({
+          success: false,
+          error: 'INVALID_BOOKING',
+          message: 'Please fill in your name, a valid email, phone number and address.',
+        }, { status: 400 });
+      }
+
+      // Pickup services don't count against cleaning teams on-site, but on-site cleaning does
+      skipCapacityCheck = rawBody.serviceType === 'pickup';
+      console.log(`${TAG} [RUGS] Customer: ${customer.name} | Rugs: ${rugCount} | Type: ${rawBody.serviceType} | Time: ${timeSlot}`);
+    } else {
+      const validation = validateBooking(rawBody);
+      if (!validation.ok) {
+        console.warn(`${TAG} Rejected invalid booking: ${validation.message}`);
+        return NextResponse.json({
+          success: false,
+          error: 'INVALID_BOOKING',
+          message: validation.message,
+        }, { status: 400 });
+      }
+
+      const valid = validation.booking;
+      planName = valid.plan.name;
+      priceFormatted = valid.plan.priceFormatted;
+      timeSlot = valid.timeSlot;
+      customer = valid.customer;
+      dateLabels = valid.dateLabels;
+      formattedDates = dateLabels.join(', ');
+      bookingId = `CF-${dateStr}-${randomStr}`;
+      skipCapacityCheck = isPerUnitPlan(valid.plan);
+
+      console.log(`${TAG} [PLAN] Customer: ${customer.name} | Plan: ${planName} | Time: ${timeSlot} | Dates: ${dateLabels.length}`);
+    }
+
     console.log(`${TAG} Generated booking ID: ${bookingId}`);
 
-    const formattedDates = dateLabels.join(', ');
-
-    // 2 + 3. Check capacity and save to Google Sheets. Done inside a lock so two simultaneous
-    // requests can't both pass the check for the last free spot.
+    // Check capacity and append to Sheets inside lock
     try {
       await withBookingLock(async () => {
-        // Rug pickups don't use a cleaning team, so they skip the cleaning-capacity check.
-        if (!isPerUnitPlan(plan)) {
+        if (!skipCapacityCheck && dateLabels.length > 0 && timeSlot) {
           console.log(`${TAG} Running availability double-check for ${dateLabels.length} date(s) at ${timeSlot}...`);
           const availability = await fetchAvailabilityData(true);
 
@@ -73,6 +127,10 @@ export async function POST(req: NextRequest) {
           console.log(`${TAG} Saving to Google Sheets...`);
           try {
             const sheets = getSheetsClient();
+            const addressField = customer.notes
+              ? `${customer.address} (Notes: ${customer.notes})`
+              : customer.address;
+
             await sheets.spreadsheets.values.append({
               spreadsheetId: process.env.GOOGLE_SHEET_ID!,
               range: 'Sheet1!A:K',
@@ -83,9 +141,9 @@ export async function POST(req: NextRequest) {
                   asText(customer.name),
                   asText(customer.email),
                   asText(customer.phone),
-                  asText(customer.address),
-                  plan.name,
-                  plan.priceFormatted,
+                  asText(addressField),
+                  planName,
+                  priceFormatted,
                   formattedDates,
                   timeSlot,
                   new Date().toISOString(),
@@ -97,7 +155,6 @@ export async function POST(req: NextRequest) {
             invalidateAvailabilityCache();
           } catch (sheetError) {
             console.error(`${TAG} Google Sheets write FAILED for ${bookingId}:`, sheetError);
-            // Continue — customer still gets a confirmation, but flag clearly for manual fix
           }
         } else {
           console.warn(`${TAG} Google Sheets credentials not configured — ${bookingId} NOT saved to Sheets`);
@@ -115,29 +172,45 @@ export async function POST(req: NextRequest) {
       throw err;
     }
 
-    // 4. Send confirmation email to customer + admin
+    // Send emails via Resend if key exists
     if (process.env.RESEND_API_KEY) {
-      // Created lazily: the Resend constructor throws when no API key is set (e.g. at build time).
       const resend = new Resend(process.env.RESEND_API_KEY);
       const senderEmail = process.env.SENDER_EMAIL || 'noreply@henamfacility.com.ng';
 
-      // Customer confirmation
+      // Customer email
       console.log(`${TAG} Sending confirmation email to ${customer.email}...`);
       try {
+        const bodyContent = isDedicatedRugBooking ? `
+          <div style="background: #F1F8F1; padding: 15px; border-radius: 10px; margin-bottom: 16px;">
+            <p style="margin: 4px 0;"><strong>Booking ID:</strong> ${bookingId}</p>
+            <p style="margin: 4px 0;"><strong>Service:</strong> CleanFreaks Rug Cleaning</p>
+            <p style="margin: 4px 0;"><strong>Plan / Details:</strong> ${planName}</p>
+            <p style="margin: 4px 0;"><strong>Schedule:</strong> ${formattedDates} at ${timeSlot}</p>
+            <p style="margin: 4px 0;"><strong>Total Amount:</strong> ${priceFormatted}</p>
+            ${customer.notes ? `<p style="margin: 4px 0;"><strong>Notes:</strong> ${customer.notes}</p>` : ''}
+          </div>
+          <p>Please complete payment and send the transfer receipt via WhatsApp to finalize your booking.</p>
+        ` : `
+          <div style="background: #F1F8F1; padding: 15px; border-radius: 10px; margin-bottom: 16px;">
+            <p style="margin: 4px 0;"><strong>Booking ID:</strong> ${bookingId}</p>
+            <p style="margin: 4px 0;"><strong>Plan:</strong> ${planName}</p>
+            <p style="margin: 4px 0;"><strong>Schedule:</strong> <br/> ${formattedDates} <br/> at ${timeSlot}</p>
+            <p style="margin: 4px 0;"><strong>Total Amount:</strong> ${priceFormatted}</p>
+          </div>
+          <p>Please ensure you complete your payment and send the receipt to us via WhatsApp to finalize your cleaning schedule.</p>
+        `;
+
         await resend.emails.send({
           to: customer.email,
           from: senderEmail,
-          subject: `Booking Confirmation: ${bookingId}`,
+          subject: isDedicatedRugBooking
+            ? `Rug Cleaning Booking Confirmation: ${bookingId}`
+            : `Booking Confirmation: ${bookingId}`,
           html: `
             <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee;">
               <h2 style="color: #2D5A27;">Hello ${customer.name},</h2>
               <p>Thank you for choosing <strong>Clean Freaks</strong>! Your booking has been successfully reserved.</p>
-              <div style="background: #F1F8F1; padding: 15px; border-radius: 10px;">
-                <p><strong>Booking ID:</strong> ${bookingId}</p>
-                <p><strong>Plan:</strong> ${plan.name}</p>
-                <p><strong>Schedule:</strong> <br/> ${formattedDates} <br/> at ${timeSlot}</p>
-              </div>
-              <p>Please ensure you complete your payment and send the receipt to us via WhatsApp to finalize your cleaning schedule.</p>
+              ${bodyContent}
               <p>Best regards,<br/>The Clean Freaks Team</p>
             </div>
           `,
@@ -147,7 +220,7 @@ export async function POST(req: NextRequest) {
         console.error(`${TAG} Customer email send FAILED for ${bookingId}:`, emailError);
       }
 
-      // Admin notification
+      // Admin email
       const adminEmail = process.env.ADMIN_EMAIL;
       if (adminEmail) {
         console.log(`${TAG} Sending admin notification to ${adminEmail}...`);
@@ -155,15 +228,17 @@ export async function POST(req: NextRequest) {
           await resend.emails.send({
             to: adminEmail,
             from: senderEmail,
-            subject: `New Booking: ${bookingId} — ${customer.name}`,
+            subject: `New Booking: ${bookingId} — ${customer.name} (${planName})`,
             html: `
               <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee;">
                 <h2 style="color: #2D5A27;">New Booking Received</h2>
                 <div style="background: #F1F8F1; padding: 15px; border-radius: 10px; margin-bottom: 16px;">
                   <p style="margin: 4px 0;"><strong>Booking ID:</strong> ${bookingId}</p>
-                  <p style="margin: 4px 0;"><strong>Plan:</strong> ${plan.name} — ${plan.priceFormatted}</p>
+                  <p style="margin: 4px 0;"><strong>Service:</strong> ${planName}</p>
+                  <p style="margin: 4px 0;"><strong>Total:</strong> ${priceFormatted}</p>
                   <p style="margin: 4px 0;"><strong>Time Slot:</strong> ${timeSlot}</p>
-                  <p style="margin: 4px 0;"><strong>Dates:</strong><br/>${formattedDates}</p>
+                  <p style="margin: 4px 0;"><strong>Date:</strong> ${formattedDates}</p>
+                  ${customer.notes ? `<p style="margin: 4px 0;"><strong>Notes:</strong> ${customer.notes}</p>` : ''}
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 10px; border: 1px solid #eee;">
                   <p style="margin: 4px 0; font-weight: bold; color: #555;">Customer Details</p>
@@ -180,11 +255,7 @@ export async function POST(req: NextRequest) {
         } catch (adminEmailError) {
           console.error(`${TAG} Admin email send FAILED for ${bookingId}:`, adminEmailError);
         }
-      } else {
-        console.warn(`${TAG} ADMIN_EMAIL not configured — admin notification skipped for ${bookingId}`);
       }
-    } else {
-      console.warn(`${TAG} RESEND_API_KEY not configured — emails NOT sent for ${bookingId}`);
     }
 
     console.log(`${TAG} ✓ Booking ${bookingId} completed successfully`);

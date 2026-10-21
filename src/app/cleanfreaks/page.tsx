@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { BookingData, Plan } from "@/types/booking";
 import StepProgress from "@/components/booking/StepProgress";
 import PlanSelection from "@/components/booking/PlanSelection";
@@ -99,7 +100,7 @@ export default function CleanFreaksBooking() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
-        className="w-full py-4 flex justify-center bg-transparent"
+        className="w-full py-4 flex flex-col items-center justify-center gap-3 bg-transparent"
       >
         <div className="px-4 drop-shadow-sm hover:scale-105 transition-transform duration-300">
           <Image
@@ -110,6 +111,19 @@ export default function CleanFreaksBooking() {
             className="h-20 sm:h-24 md:h-28 w-auto object-contain object-center"
             priority
           />
+        </div>
+
+        {/* Segmented control switcher */}
+        <div className="inline-flex items-center p-1.5 bg-gray-100/90 rounded-full border border-gray-200/80 shadow-inner">
+          <span className="px-4 sm:px-6 py-2 rounded-full text-xs font-black uppercase tracking-wider bg-[#51A432] text-white shadow-md shadow-[#51A432]/30">
+            Home Care Plans
+          </span>
+          <Link
+            href="/cleanfreaks/rug-cleaning"
+            className="px-4 sm:px-6 py-2 rounded-full text-xs font-black uppercase tracking-wider text-gray-500 hover:text-gray-900 transition-all"
+          >
+            Rug Cleaning
+          </Link>
         </div>
       </motion.header>
 
@@ -132,7 +146,7 @@ export default function CleanFreaksBooking() {
               A Cleaner Home, <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#51A432] to-[#00774D]">A Fresher Life.</span>
             </motion.h1>
-            <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center gap-3">
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -141,6 +155,20 @@ export default function CleanFreaksBooking() {
               >
                 <Sparkles size={18} className="text-[#51A432] animate-pulse" />
                 CleanFreaks Service Plans
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+              >
+                <Link
+                  href="/cleanfreaks/rug-cleaning"
+                  className="inline-flex items-center gap-2 bg-white hover:bg-[#E7F5E4] text-[#00774D] px-5 py-2.5 rounded-full text-xs font-bold border border-[#51A432]/30 shadow-sm transition-all hover:scale-105"
+                >
+                  <span>✨ Need your rugs cleaned? Flat ₦15,000 / rug</span>
+                  <span className="font-black text-[#51A432]">Book Rug Cleaning →</span>
+                </Link>
               </motion.div>
             </div>
           </motion.section>
