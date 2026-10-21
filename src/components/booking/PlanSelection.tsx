@@ -123,7 +123,7 @@ export default function PlanSelection({ selectedPlan, selectedQuantity, onSelect
           </p>
         </div>
         <Link
-          href="/cleanfreaks/rug-cleaning"
+          href="/rugs"
           className="whitespace-nowrap px-6 py-4 rounded-2xl bg-[#51A432] text-white font-black text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-[#00774D] hover:-translate-y-0.5 transition-all shadow-md shadow-[#51A432]/20"
         >
           Book Rug Cleaning

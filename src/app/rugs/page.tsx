@@ -1,5 +1,7 @@
-import { redirect } from 'next/navigation';
+"use client";
 
-export default function RugsRedirect() {
-  redirect('/cleanfreaks/rug-cleaning');
+import RugCleaningPage from "@/app/cleanfreaks/rug-cleaning/page";
+
+export default function RugsPage() {
+  return <RugCleaningPage />;
 }

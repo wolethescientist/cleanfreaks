@@ -119,7 +119,7 @@ export default function CleanFreaksBooking() {
             Home Care Plans
           </span>
           <Link
-            href="/cleanfreaks/rug-cleaning"
+            href="/rugs"
             className="px-4 sm:px-6 py-2 rounded-full text-xs font-black uppercase tracking-wider text-gray-500 hover:text-gray-900 transition-all"
           >
             Rug Cleaning
@@ -170,7 +170,7 @@ export default function CleanFreaksBooking() {
                 transition={{ delay: 0.35 }}
               >
                 <Link
-                  href="/cleanfreaks/rug-cleaning"
+                  href="/rugs"
                   className="inline-flex items-center gap-2 bg-[#E7F5E4] hover:bg-[#d8eed4] text-[#00774D] px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-wider border border-[#51A432]/30 shadow-sm transition-all hover:scale-105"
                 >
                   <Sparkles size={15} className="text-[#51A432] animate-pulse" />
