@@ -11,9 +11,10 @@ type PlanSelectionProps = {
   selectedPlan: Plan | null;
   selectedQuantity: number;
   onSelect: (plan: Plan, quantity?: number) => void;
+  onSwitchToRugs?: () => void;
 };
 
-export default function PlanSelection({ selectedPlan, selectedQuantity, onSelect }: PlanSelectionProps) {
+export default function PlanSelection({ selectedPlan, selectedQuantity, onSelect, onSwitchToRugs }: PlanSelectionProps) {
   // Every plan is a fixed 2-cleaner team, so the count is carried into the booking record.
   const handleSelect = (plan: Plan) => {
     onSelect(buildBookingPlan(plan));
@@ -122,13 +123,24 @@ export default function PlanSelection({ selectedPlan, selectedQuantity, onSelect
             Flat ₦15,000 per rug • Choose Doorstep Pickup or On-Site Steam Cleaning
           </p>
         </div>
-        <Link
-          href="/rugs"
-          className="whitespace-nowrap px-6 py-4 rounded-2xl bg-[#51A432] text-white font-black text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-[#00774D] hover:-translate-y-0.5 transition-all shadow-md shadow-[#51A432]/20"
-        >
-          Book Rug Cleaning
-          <ArrowRight size={16} />
-        </Link>
+        {onSwitchToRugs ? (
+          <button
+            type="button"
+            onClick={onSwitchToRugs}
+            className="whitespace-nowrap px-6 py-4 rounded-2xl bg-[#51A432] text-white font-black text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-[#00774D] hover:-translate-y-0.5 transition-all shadow-md shadow-[#51A432]/20"
+          >
+            Book Rug Cleaning
+            <ArrowRight size={16} />
+          </button>
+        ) : (
+          <Link
+            href="/cleanfreaks?service=rugs"
+            className="whitespace-nowrap px-6 py-4 rounded-2xl bg-[#51A432] text-white font-black text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-[#00774D] hover:-translate-y-0.5 transition-all shadow-md shadow-[#51A432]/20"
+          >
+            Book Rug Cleaning
+            <ArrowRight size={16} />
+          </Link>
+        )}
       </div>
     </div>
     </>

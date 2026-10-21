@@ -396,7 +396,7 @@ export default function RugCleaningPage() {
 
           <div className="text-center pt-8 border-t border-gray-100">
             <p className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest">
-              © {new Date().getFullYear()} Clean Freaks by Henam Facility Management Limited. All Rights Reserved.
+              © {new Date().getFullYear()} Clean Freaks by Henam Facility Management Limited (henamfacility.com). All Rights Reserved.
             </p>
           </div>
         </div>

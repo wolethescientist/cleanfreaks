@@ -175,7 +175,7 @@ export async function POST(req: NextRequest) {
     // Send emails via Resend if key exists
     if (process.env.RESEND_API_KEY) {
       const resend = new Resend(process.env.RESEND_API_KEY);
-      const senderEmail = process.env.SENDER_EMAIL || 'noreply@henamfacility.com.ng';
+      const senderEmail = process.env.SENDER_EMAIL || 'noreply@henamfacility.com';
 
       // Customer email
       console.log(`${TAG} Sending confirmation email to ${customer.email}...`);
