@@ -141,33 +141,40 @@ export default function CleanFreaksBooking() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-5xl sm:text-6xl md:text-[5.5rem] font-black text-[#373A3C] tracking-tighter leading-[1.1] mb-6 md:mb-10"
+              className="text-3xl sm:text-5xl md:text-6xl font-black text-[#373A3C] tracking-tight leading-[1.15] mb-4 sm:mb-6"
             >
               A Cleaner Home, <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#51A432] to-[#00774D]">A Fresher Life.</span>
             </motion.h1>
-            <div className="flex flex-col items-center gap-3">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.3 }}
-                className="inline-flex items-center gap-2 bg-[#E7F5E4] text-[#00774D] px-6 py-3 rounded-full text-[10px] md:text-sm font-black uppercase tracking-widest border border-[#51A432]/20 shadow-sm"
-              >
-                <Sparkles size={18} className="text-[#51A432] animate-pulse" />
-                CleanFreaks Service Plans
-              </motion.div>
 
+            {/* Price-first banner */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.25 }}
+              className="inline-flex items-center gap-2 sm:gap-3 bg-white/95 border-2 border-[#51A432]/30 px-4 sm:px-6 py-2 rounded-2xl shadow-sm mb-4"
+            >
+              <span className="text-xs sm:text-sm font-black text-gray-900">
+                Plans from <span className="text-[#51A432] text-sm sm:text-base">₦45,000</span>
+              </span>
+              <span className="text-gray-300">•</span>
+              <span className="text-xs sm:text-sm font-black text-gray-900">
+                Rug Care <span className="text-[#51A432] text-sm sm:text-base">₦15,000</span>/rug
+              </span>
+            </motion.div>
+
+            <div className="flex flex-col items-center gap-3">
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
+                transition={{ delay: 0.35 }}
               >
                 <Link
                   href="/cleanfreaks/rug-cleaning"
-                  className="inline-flex items-center gap-2 bg-white hover:bg-[#E7F5E4] text-[#00774D] px-5 py-2.5 rounded-full text-xs font-bold border border-[#51A432]/30 shadow-sm transition-all hover:scale-105"
+                  className="inline-flex items-center gap-2 bg-[#E7F5E4] hover:bg-[#d8eed4] text-[#00774D] px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-wider border border-[#51A432]/30 shadow-sm transition-all hover:scale-105"
                 >
-                  <span>✨ Need your rugs cleaned? Flat ₦15,000 / rug</span>
-                  <span className="font-black text-[#51A432]">Book Rug Cleaning →</span>
+                  <Sparkles size={15} className="text-[#51A432] animate-pulse" />
+                  <span>Looking for Rug Cleaning? Book Here →</span>
                 </Link>
               </motion.div>
             </div>

@@ -55,21 +55,21 @@ Please find the receipt attached below.`;
         animate={{ opacity: 1, y: 0 }}
         className="bg-white rounded-[2rem] md:rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden"
       >
-        <div className="bg-brand-primary p-8 text-white text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full mb-4 backdrop-blur-sm">
-            <Check size={32} className="text-white" strokeWidth={3} />
+        <div className="bg-brand-primary p-5 sm:p-8 text-white text-center">
+          <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-white/20 rounded-full mb-3 backdrop-blur-sm">
+            <Check size={28} className="text-white" strokeWidth={3} />
           </div>
-          <h2 className="text-3xl font-black uppercase tracking-tight mb-2">Booking Reserved!</h2>
-          <p className="text-brand-light/80 font-medium">Please complete payment to secure your schedule</p>
+          <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-tight mb-2">Booking Reserved!</h2>
+          <p className="text-brand-light/80 font-medium text-xs sm:text-sm">Please complete payment to secure your schedule</p>
 
-          <div className="mt-6 inline-block bg-white/10 px-6 py-2 rounded-full border border-white/20">
-            <span className="text-xs font-bold uppercase tracking-widest mr-2 opacity-70">Booking ID:</span>
-            <span className="text-sm font-black tracking-wider">{booking.bookingId}</span>
+          <div className="mt-4 inline-block bg-white/10 px-5 py-1.5 rounded-full border border-white/20">
+            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest mr-2 opacity-70">Booking ID:</span>
+            <span className="text-xs sm:text-sm font-black tracking-wider">{booking.bookingId}</span>
           </div>
         </div>
 
-        <div className="p-6 sm:p-8 md:p-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+        <div className="p-4 sm:p-7 md:p-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-8 sm:mb-10">
             <div className="space-y-4">
               <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
                 <Info size={14} /> Plan Summary

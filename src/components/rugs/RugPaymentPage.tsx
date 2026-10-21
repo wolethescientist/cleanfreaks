@@ -59,25 +59,25 @@ Please find my payment receipt attached below.`;
         className="bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden"
       >
         {/* Banner */}
-        <div className="bg-[#51A432] p-8 text-white text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full mb-4 backdrop-blur-sm shadow-inner">
-            <Check size={32} className="text-white" strokeWidth={3} />
+        <div className="bg-[#51A432] p-5 sm:p-8 text-white text-center">
+          <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-white/20 rounded-full mb-3 backdrop-blur-sm shadow-inner">
+            <Check size={28} className="text-white" strokeWidth={3} />
           </div>
-          <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-tight mb-2">
+          <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-tight mb-1.5">
             Rug Booking Reserved!
           </h2>
-          <p className="text-[#E7F5E4] font-medium text-sm sm:text-base">
+          <p className="text-[#E7F5E4] font-medium text-xs sm:text-sm">
             Please complete transfer to confirm your scheduled slot
           </p>
 
-          <div className="mt-5 inline-block bg-white/10 px-6 py-2 rounded-full border border-white/20">
-            <span className="text-xs font-bold uppercase tracking-widest mr-2 opacity-80">Booking ID:</span>
-            <span className="text-sm font-black tracking-wider text-white">{booking.bookingId}</span>
+          <div className="mt-4 inline-block bg-white/10 px-5 py-1.5 rounded-full border border-white/20">
+            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest mr-2 opacity-80">Booking ID:</span>
+            <span className="text-xs sm:text-sm font-black tracking-wider text-white">{booking.bookingId}</span>
           </div>
         </div>
 
-        <div className="p-6 sm:p-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="p-4 sm:p-7 md:p-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 mb-6 sm:mb-8">
             {/* Summary */}
             <div className="space-y-3">
               <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">

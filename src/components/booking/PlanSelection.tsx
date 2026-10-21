@@ -47,25 +47,26 @@ export default function PlanSelection({ selectedPlan, selectedQuantity, onSelect
             </div>
           )}
 
-          <div className="mb-6 md:mb-8 mt-2">
-            <h3 className="text-sm font-black text-brand-secondary tracking-[0.2em] uppercase mb-4 min-h-[40px]">
-              {plan.name}
-            </h3>
-            <div className="flex flex-col mb-4">
-              <span className="text-4xl md:text-5xl font-black text-[#373A3C] tracking-tighter">
+          <div className="mb-5 mt-2">
+            <div className="flex items-baseline gap-2 mb-2">
+              <span className="text-4xl sm:text-5xl font-black text-[#373A3C] tracking-tighter">
                 {plan.priceFormatted}
               </span>
-              <span className="text-gray-400 font-bold text-sm md:text-lg mt-1">{plan.period}</span>
+              <span className="text-gray-400 font-bold text-xs sm:text-sm">{plan.period}</span>
             </div>
+
+            <h3 className="text-xs sm:text-sm font-black text-brand-secondary tracking-[0.15em] uppercase mb-3">
+              {plan.name}
+            </h3>
             
-            <div className="mb-4 flex items-center gap-2 bg-brand-primary/5 p-3 rounded-xl border border-brand-primary/10">
+            <div className="mb-3 flex items-center gap-2 bg-brand-primary/5 p-2.5 rounded-xl border border-brand-primary/10">
               <Users size={14} className="text-brand-primary shrink-0" strokeWidth={3} />
               <span className="text-xs font-black text-[#373A3C] tracking-wide">{plan.cleaners} Cleaners included</span>
             </div>
 
-            <div className="bg-white/80 inline-block px-4 py-2 rounded-xl border border-brand-primary/10 shadow-sm">
-              <p className="text-brand-primary font-black text-sm tracking-wide">{plan.sessions}</p>
-              <p className="text-gray-500 text-[11px] md:text-xs font-semibold mt-0.5">{plan.visits}</p>
+            <div className="bg-white/80 inline-block px-3.5 py-2 rounded-xl border border-brand-primary/10 shadow-sm">
+              <p className="text-brand-primary font-black text-xs sm:text-sm tracking-wide">{plan.sessions}</p>
+              <p className="text-gray-500 text-[10px] sm:text-xs font-semibold mt-0.5">{plan.visits}</p>
             </div>
           </div>
 
