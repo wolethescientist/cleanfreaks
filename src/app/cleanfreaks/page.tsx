@@ -139,7 +139,7 @@ export default function CleanFreaksBookingPage() {
               </span>
               <span className="text-gray-300">•</span>
               <span className="text-xs sm:text-sm font-black text-gray-900">
-                Rug Care <span className="text-[#51A432] text-sm sm:text-base">₦15,000</span>/rug
+                Rug Care <span className="text-[#51A432] text-sm sm:text-base">₦20,000</span>/rug
               </span>
             </div>
 
@@ -150,7 +150,7 @@ export default function CleanFreaksBookingPage() {
                 className="inline-flex items-center gap-2 bg-[#E7F5E4] hover:bg-[#d8eed4] text-[#00774D] px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-wider border border-[#51A432]/30 shadow-sm transition-all hover:scale-105"
               >
                 <Sparkles size={15} className="text-[#51A432] animate-pulse" />
-                <span>Looking for Rug Cleaning? Book Rugs Here (₦15,000/rug) →</span>
+                <span>Looking for Rug Cleaning? Book Rugs Here (₦20,000/rug) →</span>
               </Link>
             </div>
           </motion.section>
@@ -255,20 +255,25 @@ export default function CleanFreaksBookingPage() {
             {/* Contact Details */}
             <div className="flex flex-col items-center md:items-start space-y-3">
               <h4 className="text-xs sm:text-sm font-black text-gray-900 uppercase tracking-widest mb-1">Contact Us</h4>
-              <a href="tel:08112220561" className="flex items-center gap-3 text-xs sm:text-sm hover:text-[#51A432] transition-colors group">
+              <a href="tel:09053121695" className="flex items-center gap-3 text-xs sm:text-sm hover:text-[#51A432] transition-colors group">
                 <span className="bg-[#E7F5E4] p-2 rounded-full text-[#51A432] group-hover:bg-[#51A432] group-hover:text-white transition-colors duration-300">
                   <Phone size={15} />
                 </span>
                 <span className="font-bold text-gray-700 group-hover:text-[#51A432] transition-colors duration-300">
-                  081 1222 0561
+                  090 5312 1695
                 </span>
               </a>
-              <a href="tel:08112220562" className="flex items-center gap-3 text-xs sm:text-sm hover:text-[#51A432] transition-colors group">
+              <a
+                href="https://wa.me/2349053121695"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 text-xs sm:text-sm hover:text-[#51A432] transition-colors group"
+              >
                 <span className="bg-[#E7F5E4] p-2 rounded-full text-[#51A432] group-hover:bg-[#51A432] group-hover:text-white transition-colors duration-300">
                   <Phone size={15} />
                 </span>
                 <span className="font-bold text-gray-700 group-hover:text-[#51A432] transition-colors duration-300">
-                  081 1222 0562
+                  WhatsApp: 090 5312 1695
                 </span>
               </a>
             </div>

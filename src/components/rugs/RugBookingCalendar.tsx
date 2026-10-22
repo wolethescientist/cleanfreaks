@@ -186,7 +186,7 @@ export default function RugBookingCalendar({
                 ) : (
                   <>
                     <strong className="text-gray-900 block mb-0.5">On-Site Cleaning Visit</strong>
-                    Our technician team will arrive with professional steam extraction equipment to treat and clean your rugs directly in your home.
+                    Our technician team will arrive with professional extraction equipment to treat and clean your rugs directly in your home.
                   </>
                 )}
               </div>

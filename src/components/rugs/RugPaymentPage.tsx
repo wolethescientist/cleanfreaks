@@ -32,7 +32,7 @@ export default function RugPaymentPage({ booking }: RugPaymentPageProps) {
 
   const serviceLabel = booking.serviceType === 'pickup'
     ? 'Doorstep Pickup & Facility Deep Wash'
-    : 'On-Site Steam Cleaning';
+    : 'On-Site Cleaning';
 
   const whatsappMessage = `Hello Clean Freaks, 
 
@@ -95,7 +95,7 @@ Please find my payment receipt attached below.`;
                 <div className="space-y-2.5 border-t border-gray-200/60 pt-4 text-xs font-bold text-gray-600">
                   <div className="flex items-center gap-2">
                     <Layers size={14} className="text-[#51A432]" />
-                    <span>{booking.rugCount} {booking.rugCount === 1 ? 'Rug' : 'Rugs'} (Flat ₦15,000/rug)</span>
+                    <span>{booking.rugCount} {booking.rugCount === 1 ? 'Rug' : 'Rugs'} (Flat ₦20,000/rug)</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Calendar size={14} className="text-[#51A432]" />

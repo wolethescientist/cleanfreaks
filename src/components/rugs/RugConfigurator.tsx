@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { PRICE_PER_RUG, RUG_INCLUDES } from "@/constants/rugs";
 import { RugServiceType } from "@/types/booking";
-import { Truck, Home, Check, ArrowRight, Minus, Plus, ShieldCheck } from "lucide-react";
+import { Truck, Home, Check, ArrowRight, Minus, Plus, MessageCircle } from "lucide-react";
 import AnimatedPrice from "@/components/booking/AnimatedPrice";
 
 type RugConfiguratorProps = {
@@ -31,6 +31,12 @@ export default function RugConfigurator({
     setCount((prev) => Math.max(prev - 1, 1));
   };
 
+  const whatsappOnsiteUrl = `https://wa.me/2349053121695?text=${encodeURIComponent(
+    `Hello CleanFreaks, I would like to book On-Site Rug Cleaning for ${count} ${
+      count === 1 ? "rug" : "rugs"
+    }. Please provide available dates and technician schedule.`
+  )}`;
+
   return (
     <div className="max-w-xl mx-auto py-4 sm:py-8 px-4">
       {/* Single CleanFreaks-Style Plan Card */}
@@ -40,7 +46,7 @@ export default function RugConfigurator({
         transition={{ duration: 0.4 }}
         className="relative p-6 sm:p-8 md:p-10 rounded-[2rem] md:rounded-[2.5rem] bg-white border-2 border-[#51A432]/40 shadow-[0_12px_45px_rgba(81,164,50,0.18)] flex flex-col transition-all duration-500"
       >
-        {/* Most Popular / Flat Rate Badge */}
+        {/* Flat Rate Badge */}
         <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#51A432] text-white text-[10px] md:text-xs font-black px-5 py-1.5 rounded-full shadow-md uppercase tracking-wider whitespace-nowrap border-2 border-white z-20">
           Flat Rate • All Sizes
         </div>
@@ -67,7 +73,7 @@ export default function RugConfigurator({
             <span className="text-xs font-black text-[#373A3C] tracking-wide">
               {type === "pickup"
                 ? "Free Doorstep Pickup & Return Delivery Included"
-                : "Professional On-Site Steam Cleaning Visit"}
+                : "Professional On-Site Cleaning (Booked via WhatsApp)"}
             </span>
           </div>
 
@@ -88,7 +94,7 @@ export default function RugConfigurator({
               Select Number of Rugs:
             </span>
             <span className="text-xs font-black text-[#51A432]">
-              ₦15,000 / rug
+              ₦{PRICE_PER_RUG.toLocaleString()} / rug
             </span>
           </div>
 
@@ -157,8 +163,11 @@ export default function RugConfigurator({
                 className={`shrink-0 mt-0.5 ${type === "pickup" ? "text-[#51A432]" : "text-gray-400"}`}
               />
               <div>
-                <p className="text-xs font-black text-gray-900">Facility Deep Wash</p>
-                <p className="text-[10px] text-gray-500 font-medium">Free Doorstep Pickup & Return</p>
+                <p className="text-xs font-black text-gray-900">Pickup & Drop-Off</p>
+                <p className="text-[10px] text-gray-500 font-medium">Free Doorstep Pickup & Delivery</p>
+                <span className="inline-block mt-1 text-[9px] font-black uppercase text-[#00774D] bg-[#51A432]/10 px-2 py-0.5 rounded-full">
+                  Online Booking
+                </span>
               </div>
             </button>
 
@@ -167,20 +176,37 @@ export default function RugConfigurator({
               onClick={() => setType("on-site")}
               className={`p-3.5 rounded-2xl border text-left transition-all flex items-start gap-3 ${
                 type === "on-site"
-                  ? "border-[#51A432] bg-[#E7F5E4]/60 shadow-sm ring-1 ring-[#51A432]"
+                  ? "border-[#25D366] bg-[#25D366]/10 shadow-sm ring-1 ring-[#25D366]"
                   : "border-gray-200 bg-white hover:border-gray-300"
               }`}
             >
               <Home
                 size={18}
-                className={`shrink-0 mt-0.5 ${type === "on-site" ? "text-[#51A432]" : "text-gray-400"}`}
+                className={`shrink-0 mt-0.5 ${type === "on-site" ? "text-[#25D366]" : "text-gray-400"}`}
               />
               <div>
-                <p className="text-xs font-black text-gray-900">On-Site Steam Clean</p>
-                <p className="text-[10px] text-gray-500 font-medium">Done at your home or office</p>
+                <p className="text-xs font-black text-gray-900">On-Site Cleaning</p>
+                <p className="text-[10px] text-gray-500 font-medium">Cleaned at your home/office</p>
+                <span className="inline-block mt-1 text-[9px] font-black uppercase text-[#128C7E] bg-[#25D366]/20 px-2 py-0.5 rounded-full">
+                  WhatsApp DM
+                </span>
               </div>
             </button>
           </div>
+
+          {/* Context note for On-Site Cleaning */}
+          {type === "on-site" && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              className="mt-3 p-3.5 rounded-xl bg-[#25D366]/10 border border-[#25D366]/30 text-xs text-gray-700 flex items-start gap-2.5"
+            >
+              <MessageCircle size={16} className="text-[#128C7E] shrink-0 mt-0.5" />
+              <p className="text-[11px] leading-relaxed">
+                Online bookings are for <strong>Pickup & Drop-Off</strong>. For On-Site Cleaning at your location, click below to chat with our dispatch team directly on WhatsApp!
+              </p>
+            </motion.div>
+          )}
         </div>
 
         {/* What's Included - Exact CleanFreaks Checklist Style */}
@@ -207,7 +233,7 @@ export default function RugConfigurator({
             <span className="text-[#373A3C] text-[13px] font-black leading-relaxed">
               {type === "pickup"
                 ? "Full immersion bath, centrifuge extraction & heat-chamber drying (Delivered 48–72h)"
-                : "High-power on-site steam extraction with fast 2–4 hour drying turnaround"}
+                : "High-power on-site extraction with fast 2–4 hour drying turnaround"}
             </span>
           </div>
         </div>
@@ -222,15 +248,28 @@ export default function RugConfigurator({
           </p>
         </div>
 
-        {/* Proceed Button - Exact CleanFreaks Style */}
-        <button
-          type="button"
-          onClick={() => onProceed(count, type)}
-          className="w-full py-5 rounded-2xl font-black tracking-widest uppercase text-sm flex items-center justify-center gap-3 bg-[#51A432] text-white shadow-[0_8px_20px_rgba(81,164,50,0.3)] hover:shadow-[0_12px_25px_rgba(81,164,50,0.4)] hover:-translate-y-1 transition-all duration-300"
-        >
-          Proceed to Schedule
-          <ArrowRight size={20} />
-        </button>
+        {/* Action Button: Conditional based on Pickup vs On-Site */}
+        {type === "pickup" ? (
+          <button
+            type="button"
+            onClick={() => onProceed(count, "pickup")}
+            className="w-full py-5 rounded-2xl font-black tracking-widest uppercase text-sm flex items-center justify-center gap-3 bg-[#51A432] text-white shadow-[0_8px_20px_rgba(81,164,50,0.3)] hover:shadow-[0_12px_25px_rgba(81,164,50,0.4)] hover:-translate-y-1 transition-all duration-300"
+          >
+            Proceed to Schedule Pickup
+            <ArrowRight size={20} />
+          </button>
+        ) : (
+          <a
+            href={whatsappOnsiteUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full py-5 rounded-2xl font-black tracking-widest uppercase text-sm flex items-center justify-center gap-3 bg-[#25D366] text-white shadow-[0_8px_20px_rgba(37,211,102,0.3)] hover:shadow-[0_12px_25px_rgba(37,211,102,0.4)] hover:-translate-y-1 transition-all duration-300"
+          >
+            <MessageCircle size={20} />
+            Book On-Site on WhatsApp
+            <ArrowRight size={20} />
+          </a>
+        )}
       </motion.div>
     </div>
   );

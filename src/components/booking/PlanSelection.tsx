@@ -119,7 +119,7 @@ export default function PlanSelection({ selectedPlan, selectedQuantity, onSelect
             Looking for Professional Rug Cleaning?
           </h4>
           <p className="text-xs sm:text-sm text-gray-600 font-medium mt-1">
-            Flat ₦15,000 per rug • Choose Doorstep Pickup or On-Site Steam Cleaning
+            Flat ₦20,000 per rug • Doorstep Pickup & Delivery or On-Site Cleaning
           </p>
         </div>
         <Link

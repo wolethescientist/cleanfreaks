@@ -1,12 +1,12 @@
-export const PRICE_PER_RUG = 15000;
+export const PRICE_PER_RUG = 20000;
 
 export const RUG_SERVICES = {
   'on-site': {
     id: 'on-site',
-    title: 'On-Site Steam Cleaning',
+    title: 'On-Site Cleaning',
     subtitle: 'Professional deep clean right in your home',
     badge: 'Same-Day Service',
-    description: 'Our specialist technicians bring high-powered steam extraction equipment straight to your doorstep. Perfect when you need quick, convenient turnaround without rugs leaving your premises.',
+    description: 'Our specialist technicians bring high-powered extraction equipment straight to your doorstep. Perfect when you need quick, convenient turnaround without rugs leaving your premises.',
     highlights: [
       'Cleaned on-site at your home or office',
       'High-speed extraction for quick 2–4 hr drying',

@@ -10,6 +10,7 @@ import {
 } from '@/lib/availability';
 import { isPerUnitPlan, validateBooking } from '@/lib/booking';
 import { MAX_PER_SLOT, SHEET_DATE_FORMAT } from '@/constants/schedule';
+import { PRICE_PER_RUG } from '@/constants/rugs';
 
 const TAG = '[BOOKING]';
 
@@ -46,7 +47,7 @@ export async function POST(req: NextRequest) {
 
     if (isDedicatedRugBooking) {
       const rugCount = Math.max(1, Number(rawBody.rugCount) || 1);
-      const totalAmount = rugCount * 15000;
+      const totalAmount = rugCount * PRICE_PER_RUG;
       priceFormatted = rawBody.totalPriceFormatted || `₦${totalAmount.toLocaleString()}`;
       const serviceLabel = rawBody.serviceType === 'pickup' ? 'Pickup & Delivery' : 'On-Site Cleaning';
       planName = `Rug Cleaning (${rugCount} ${rugCount === 1 ? 'Rug' : 'Rugs'} — ${serviceLabel})`;

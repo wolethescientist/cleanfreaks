@@ -316,20 +316,25 @@ export default function RugsPage() {
             {/* Contact Details */}
             <div className="flex flex-col items-center md:items-start space-y-3">
               <h4 className="text-xs sm:text-sm font-black text-gray-900 uppercase tracking-widest mb-1">Contact Us</h4>
-              <a href="tel:08112220561" className="flex items-center gap-3 text-xs sm:text-sm hover:text-[#51A432] transition-colors group">
+              <a href="tel:09053121695" className="flex items-center gap-3 text-xs sm:text-sm hover:text-[#51A432] transition-colors group">
                 <span className="bg-[#E7F5E4] p-2 rounded-full text-[#51A432] group-hover:bg-[#51A432] group-hover:text-white transition-colors duration-300">
                   <Phone size={15} />
                 </span>
                 <span className="font-bold text-gray-700 group-hover:text-[#51A432] transition-colors duration-300">
-                  081 1222 0561
+                  090 5312 1695
                 </span>
               </a>
-              <a href="tel:08112220562" className="flex items-center gap-3 text-xs sm:text-sm hover:text-[#51A432] transition-colors group">
+              <a
+                href="https://wa.me/2349053121695"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 text-xs sm:text-sm hover:text-[#51A432] transition-colors group"
+              >
                 <span className="bg-[#E7F5E4] p-2 rounded-full text-[#51A432] group-hover:bg-[#51A432] group-hover:text-white transition-colors duration-300">
                   <Phone size={15} />
                 </span>
                 <span className="font-bold text-gray-700 group-hover:text-[#51A432] transition-colors duration-300">
-                  081 1222 0562
+                  WhatsApp: 090 5312 1695
                 </span>
               </a>
             </div>
